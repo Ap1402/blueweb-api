@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { createCategoryDto } from './categories/category.dto';
 import { ReportCategoryService } from './categories/reportCategory.service';
@@ -21,7 +21,6 @@ export class ReportsController {
         return this.reportsService.createReport(createReport, clientId);
     }
 
-
     @UseGuards(JwtAuthGuard)
     @Post('/categories')
     async createCategory(@Body() createCategory: createCategoryDto) {
@@ -33,6 +32,29 @@ export class ReportsController {
     async createStatus(@Body() createStatus: createStatusDto) {
         return this.reportsStatusService.createStatus(createStatus);
     }
+
+    @Get('/categories')
+    async getCategories() {
+        return this.reportsCategoryService.getAllCategories();
+    }
+
+    @Delete('/categories/:categoryId')
+    async deleteCategory(@Param() params) {
+        const { categoryId } = params;
+        return this.reportsCategoryService.deactivateCategories(categoryId);
+    }
+
+    @Delete('/statuses/:statusId')
+    async deleteStatus(@Param() params) {
+        const { statusId } = params;
+        return this.reportsStatusService.deactivateStatus(statusId);
+    }
+
+    @Get('/statuses')
+    async getStatuses() {
+        return this.reportsStatusService.getAllStatuses();
+    }
+
 
 
 

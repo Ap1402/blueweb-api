@@ -1,4 +1,7 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne } from 'sequelize-typescript';
+import { Client } from 'src/clients/client.model';
+import { ReportCategory } from './categories/reportCategory.model';
+import { ReportStatus } from './statuses/reportStatus.model';
 
 @Table
 export class Report extends Model<Report> {
@@ -30,4 +33,26 @@ export class Report extends Model<Report> {
     type: DataType.STRING,
   })
   supportMessageInner: string;
+
+  @ForeignKey(() => Client)
+  @Column
+  clientId: number;
+
+  @BelongsTo(() => Client, 'clientId')
+  client: Client;
+
+  @ForeignKey(() => ReportCategory)
+  @Column
+  categoryId: number;
+
+  @BelongsTo(() => ReportCategory, 'categoryId')
+  category: ReportCategory;
+
+
+  @ForeignKey(() => ReportStatus)
+  @Column
+  statusId: number;
+
+  @BelongsTo(() => ReportStatus, 'statusId')
+  status: ReportStatus;
 }

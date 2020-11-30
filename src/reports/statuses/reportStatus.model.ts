@@ -1,7 +1,8 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Report } from '../report.model';
 
 @Table
-export class ReportCategory extends Model<ReportCategory> {
+export class ReportStatus extends Model<ReportStatus> {
   @Column({
     primaryKey: true,
     autoIncrement: true,
@@ -15,5 +16,7 @@ export class ReportCategory extends Model<ReportCategory> {
     allowNull: false,
   })
   name: string;
-
+  
+  @HasMany(() => Report)
+  reports: Report[];
 }

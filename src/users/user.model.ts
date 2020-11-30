@@ -1,4 +1,7 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, ForeignKey, HasOne, Model, Table } from 'sequelize-typescript';
+import { Client } from 'src/clients/client.model';
+import { Role } from 'src/roles/roles.model';
+import * as bcrypt from 'bcrypt';
 
 @Table
 export class User extends Model<User> {
@@ -27,11 +30,34 @@ export class User extends Model<User> {
   set password(value: string) {
     this.setDataValue('password', value);
   };
-
-
-
-
-
+  
   @Column({ defaultValue: true })
   isActive: boolean;
+
+  @ForeignKey(() => Client)
+  @Column
+  clientId: number;
+
+  @BelongsTo(() => Client, 'clientId')
+  client: Client;
+
+  @ForeignKey(() => Role)
+  @Column
+  roleId: number;
+
+  @HasOne(() => Role, 'roleId')
+  role: Role;
+
+  @BeforeUpdate
+  @BeforeCreate
+  static hashPassword(user: User) {
+    user.password =
+    user.password && user.password != ""
+      ? bcrypt.hashSync(user.password, 10)
+      : "";
+  }
+
+  comparePassword(password:string) {
+    return bcrypt.compareSync(password, this.password);
+  }
 }

@@ -1,4 +1,6 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
+import { Report } from 'src/reports/report.model';
+import { User } from 'src/users/user.model';
 
 @Table
 export class Client extends Model<Client> {
@@ -92,4 +94,10 @@ export class Client extends Model<Client> {
 
   @Column({ defaultValue: true })
   isActive: boolean;
+
+  @HasOne(() => User)
+  user: User;
+
+  @HasMany(() => Report)
+  reports: Report[];
 }

@@ -17,7 +17,7 @@ export const clientSchema = Joi.object({
     otherwise: Joi.string().max(30).required(),
   }),
 
-  isEnterprise: Joi.valid('0', '1'),
+  isEnterprise: Joi.boolean(),
 
   commercialReason: Joi.when("isEnterprise", {
     is: '1',

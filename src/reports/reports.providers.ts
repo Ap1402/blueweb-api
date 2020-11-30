@@ -1,6 +1,6 @@
-import { ReportStatus } from './categories/reportCategory.model';
+import { ReportCategory } from './categories/reportCategory.model';
 import { Report } from './report.model';
-import { ReportCategory } from './statuses/reportStatus.model';
+import { ReportStatus } from './statuses/reportStatus.model';
 
 export const reportsProvider = [
   {

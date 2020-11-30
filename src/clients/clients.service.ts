@@ -19,7 +19,7 @@ export class ClientsService {
     if(client){
         throw new HttpException('Hay un cliente ya registrado con esta cédula o rif',HttpStatus.CONFLICT);
     };
-    this.logger.debug('No client found with designed dni, calling sequelize create functin for new client');
+    this.logger.debug('No client found with designed dni, calling sequelize create function for new client');
     const newClient = await this.clientsRepository.create(clientDto);
     return newClient;
   }
@@ -27,6 +27,7 @@ export class ClientsService {
 
   async updateClient(clientDto:createClientDto, id:number){
     const client = await this.clientsRepository.findByPk(id)
+    console.log(clientDto)
     if(!client){
         throw new HttpException('Parece que el cliente que intentas actualizar no existe',HttpStatus.NOT_FOUND);
     }
@@ -48,11 +49,25 @@ export class ClientsService {
     return response;
   }
 
-  async getClient(id:number){
+  async getClientById(id:number){
     const client= await this.clientsRepository.findByPk(id);
     if(!client){
       throw new HttpException('Parece que el cliente que buscas no existe',HttpStatus.NOT_FOUND);
     }
+    return client
+  }
+
+  async getClientByDni(dni:number, identification:string){
+    const client = await this.clientsRepository.findOne({
+      where: { dni: dni, identification: identification }
+    });
+    if(!client){
+      this.logger.debug('No client found with this dni');
+
+      throw new HttpException('Parece que el cliente que buscas no existe',HttpStatus.NOT_FOUND);
+    }
+    this.logger.debug('Success, returning client');
+
     return client
   }
 

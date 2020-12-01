@@ -57,4 +57,36 @@ export class UsersService {
         const response = getPagingData(users, page, limit);
         return response;
     }
+
+
+    async getUserById(id: number) {
+        const user = await this.usersRepository.findByPk(id);
+        if (!user) {
+            throw new HttpException('Este usuario no existe', HttpStatus.NOT_FOUND);
+        }
+        return user;
+    }
+
+
+    async createUserOther(createUserDto: createUserDto) {
+        this.logger.debug('Searching for an user already registered with this username')
+        const user = await this.usersRepository.findOne({
+            where: {
+                username: createUserDto.username
+            }
+        })
+        if (user) {
+            throw new HttpException('Este nombre de usuario ya está en uso', HttpStatus.BAD_REQUEST);
+        }
+        this.logger.log('Creating new user')
+        const newUserData = {
+            username: createUserDto.username,
+            password: createUserDto.password,
+            roleId: createUserDto.roleId | 1
+        };
+        const result: User = await this.usersRepository.create(newUserData);
+        return result;
+    }
+
+
 }

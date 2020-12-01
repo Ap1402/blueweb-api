@@ -8,9 +8,11 @@ import { ReportsModule } from './reports/reports.module';
 import { ContactMessagesModule } from './contact-messages/contact-messages.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
+import { CaslModule } from './casl/casl.module';
+import { FactibilityRequestsModule } from './factibility-requests/factibility-requests.module';
 
 @Module({
-  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule],
+  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule],
   controllers: [AppController],
   providers: [AppService],
 })

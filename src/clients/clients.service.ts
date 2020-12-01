@@ -9,15 +9,15 @@ export class ClientsService {
 
   constructor(
     @Inject('CLIENTS_REPOSITORY') private clientsRepository: typeof Client,
-  ) {}
+  ) { }
 
   async createClient(clientDto: createClientDto) {
     this.logger.debug('Request for creating new client, searching other clients with designed dni');
     const client = await this.clientsRepository.findOne({
       where: { dni: clientDto.dni, identification: clientDto.identification },
     });
-    if(client){
-        throw new HttpException('Hay un cliente ya registrado con esta cédula o rif',HttpStatus.CONFLICT);
+    if (client) {
+      throw new HttpException('Hay un cliente ya registrado con esta cédula o rif', HttpStatus.CONFLICT);
     };
     this.logger.debug('No client found with designed dni, calling sequelize create function for new client');
     const newClient = await this.clientsRepository.create(clientDto);
@@ -25,46 +25,45 @@ export class ClientsService {
   }
 
 
-  async updateClient(clientDto:createClientDto, id:number){
+  async updateClient(clientDto: createClientDto, id: number) {
     const client = await this.clientsRepository.findByPk(id)
-    console.log(clientDto)
-    if(!client){
-        throw new HttpException('Parece que el cliente que intentas actualizar no existe',HttpStatus.NOT_FOUND);
+    if (!client) {
+      throw new HttpException('Parece que el cliente que intentas actualizar no existe', HttpStatus.NOT_FOUND);
     }
     for (const key of Object.keys(clientDto)) {
-        client[key] = clientDto[key];
+      client[key] = clientDto[key];
     }
     await client.save();
     return client;
   }
 
 
-  async getAllClients(condition,limit:number,offset:number,page:number){
+  async getAllClients(condition, limit: number, offset: number, page: number) {
     const clients = await this.clientsRepository.findAndCountAll({
-      where:condition,
+      where: condition,
       limit,
       offset
     });
-    const response= getPagingData(clients,page,limit);
+    const response = getPagingData(clients, page, limit);
     return response;
   }
 
-  async getClientById(id:number){
-    const client= await this.clientsRepository.findByPk(id);
-    if(!client){
-      throw new HttpException('Parece que el cliente que buscas no existe',HttpStatus.NOT_FOUND);
+  async getClientById(id: number) {
+    const client = await this.clientsRepository.findByPk(id);
+    if (!client) {
+      throw new HttpException('Parece que el cliente que buscas no existe', HttpStatus.NOT_FOUND);
     }
     return client
   }
 
-  async getClientByDni(dni:number, identification:string){
+  async getClientByDni(dni: number, identification: string) {
     const client = await this.clientsRepository.findOne({
       where: { dni: dni, identification: identification }
     });
-    if(!client){
+    if (!client) {
       this.logger.debug('No client found with this dni');
 
-      throw new HttpException('Parece que el cliente que buscas no existe',HttpStatus.NOT_FOUND);
+      throw new HttpException('Parece que el cliente que buscas no existe', HttpStatus.NOT_FOUND);
     }
     this.logger.debug('Success, returning client');
 

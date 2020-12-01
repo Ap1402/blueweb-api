@@ -5,10 +5,11 @@ import {reportsProvider} from './reports.providers';
 import { ClientsModule } from 'src/clients/clients.module';
 import { ReportStatusService } from './statuses/reportStatusService';
 import { ReportCategoryService } from './categories/reportCategory.service';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   providers: [ReportsService, ...reportsProvider, ReportStatusService, ReportCategoryService],
   controllers: [ReportsController],
-  imports:[ClientsModule]
+  imports:[ClientsModule, CaslModule]
 })
 export class ReportsModule {}

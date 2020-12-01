@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Request, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards, UsePipes } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JoiValidationPipe } from 'src/utils/JoiValidationPipe';
 import { getPagination, getPagingData } from 'src/utils/paginationService';
@@ -17,8 +17,8 @@ export class ClientsController {
   }
 
   @Get()
-  async getAll(@Param() params) {
-    const { page, size } = params;
+  async getAll(@Query() query) {
+    const { page, size } = query;
     const condition = null;
 
     let { limit, offset } = getPagination(page, size);

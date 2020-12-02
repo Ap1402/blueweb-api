@@ -1,14 +1,16 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { JoiValidationPipe } from 'src/utils/JoiValidationPipe';
 import { getPagination } from 'src/utils/paginationService';
 import { createFactibilityDto } from './dto/create-factibility.dto';
 import { FactibilityRequestsService } from './factibility-requests.service';
+import { FacitibilityRequestSchema } from './validators/factibility.validator';
 
 @Controller('factibility-requests')
 export class FactibilityRequestsController {
     constructor(private factibilityRequestsService: FactibilityRequestsService) { }
 
     @Post()
-    async create(@Body() createDto: createFactibilityDto) {
+    async create(@Body(new JoiValidationPipe(FacitibilityRequestSchema, { create: true })) createDto: createFactibilityDto) {
         return this.factibilityRequestsService.create(createDto)
     }
 
@@ -22,17 +24,19 @@ export class FactibilityRequestsController {
         return this.factibilityRequestsService.getAllRequests(condition, limit, offset, page)
     }
 
+    @Get('/count')
+    async countRequests(@Query() query) {
+        const { pending } = query;
+        const condition = pending ? { pending: pending } : null;
+        return this.factibilityRequestsService.count(condition)
+    }
+
     @Get(':requestId')
     async getRequestById(@Param() params) {
         const { requestId } = params;
         return this.factibilityRequestsService.getRequestById(requestId)
     }
 
-    @Get('/count')
-    async countRequests(@Query() query) {
-        const { pending } = query;
-        return this.factibilityRequestsService.count(pending)
-    }
 
     @Put(':requestId')
     async updateRequest(@Body() updateRequestDto: createFactibilityDto, @Param() params) {

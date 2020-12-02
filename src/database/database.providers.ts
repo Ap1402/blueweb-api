@@ -22,8 +22,8 @@ export const databaseProviders = [
         password:"2804"
       });
       sequelize.addModels([Client, User, ReportCategory,ReportStatus,Report, Token,ContactMessage, Role, FactibilityRequest]);
-      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
-      await sequelize.sync({force:true})
+/*       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
+ */      await sequelize.sync(/* {force:true} */)
       await Role.create({name:'client'})
       return sequelize;
     },

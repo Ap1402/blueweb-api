@@ -20,16 +20,17 @@ export class AuthService {
         });
 
         if (user && user.comparePassword(userData.password)) {
-            const {password, ...result}= user;
+            const { password, ...result } = user;
             return user
         }
         throw new HttpException('Hay un problema con su usuario o contraseña', HttpStatus.BAD_REQUEST)
     }
 
     async login(user: User) {
-        const payload = { username: user.username, sub: user.id, role: user.role.name, clientId:user.clientId };
+        const payload = { username: user.username, sub: user.id, role: user.role.name, clientId: user.clientId };
         return {
-          access_token: this.jwtService.sign(payload),
+            access_token: this.jwtService.sign(payload),
+            role: user.role.name
         };
     }
 

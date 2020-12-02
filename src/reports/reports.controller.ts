@@ -1,14 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AppAbility } from 'src/casl/casl-ability.factory';
 import { Action, CheckPolicies } from 'src/casl/constants';
 import { PoliciesGuard } from 'src/casl/policies.guard';
+import { JoiValidationPipe } from 'src/utils/JoiValidationPipe';
+import { getPagination } from 'src/utils/paginationService';
 import { createCategoryDto } from './categories/category.dto';
+import { ReportCategory } from './categories/reportCategory.model';
 import { ReportCategoryService } from './categories/reportCategory.service';
 import { updateReportDto } from './report.dto';
+import { Report } from './report.model';
 import { ReportsService } from './reports.service';
 import { ReportStatusService } from './statuses/reportStatusService';
 import { createStatusDto } from './statuses/status.dto';
+import { ReportSchema } from './validators/reports.validator';
 
 @Controller('reports')
 export class ReportsController {
@@ -20,16 +25,19 @@ export class ReportsController {
 
     @UseGuards(JwtAuthGuard)
     @Post()
-    async create(@Body() createReport,
-        @Request() req) {
+    async create(@Body(new JoiValidationPipe(ReportSchema, { update: false })) createReport,
+        @Request() req):Promise<Report> {
         const { clientId } = req.user;
         return this.reportsService.createReport(createReport, clientId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getAll() {
-        return this.reportsService.getAll();
+    async getAll(@Query() query) {
+        const { page, size } = query;
+        const condition = null;
+        let { limit, offset } = getPagination(page, size);
+        return this.reportsService.getAll(condition, limit, offset, page);
     }
 
 
@@ -38,14 +46,6 @@ export class ReportsController {
     async getSelfClient(@Request() req) {
         const { clientId } = req.user;
         return this.reportsService.getByClient(clientId);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Put(':reportId')
-    async update(@Body() updateDto: updateReportDto,
-        @Param() params) {
-        const { reportId } = params;
-        return this.reportsService.updateReport(reportId, updateDto);
     }
 
     @UseGuards(JwtAuthGuard)
@@ -61,25 +61,48 @@ export class ReportsController {
     }
 
     @Get('/categories')
-    async getCategories() {
-        return this.reportsCategoryService.getAllCategories();
+    async getCategories(@Query() query) {
+        const page: number = query.page;
+        const size: number = query.size;
+        const condition = null;
+        let { limit, offset } = getPagination(page, size);
+        return this.reportsCategoryService.getAllCategories(condition, limit, offset, page);
+    }
+
+    @Get('/statuses')
+    async getStatuses(@Query() query) {
+        const page: number = query.page;
+        const size: number = query.size;
+        const condition = null;
+        let { limit, offset } = getPagination(page, size);
+        return this.reportsStatusService.getAllStatuses(condition, limit, offset, page);
     }
 
     @Delete('/categories/:categoryId')
-    async deleteCategory(@Param() params) {
+    async deleteCategory(@Param() params): Promise<number> {
         const { categoryId } = params;
         return this.reportsCategoryService.deactivateCategories(categoryId);
     }
 
     @Delete('/statuses/:statusId')
-    async deleteStatus(@Param() params) {
+    async deleteStatus(@Param() params): Promise<number> {
         const { statusId } = params;
         return this.reportsStatusService.deactivateStatus(statusId);
     }
 
-    @Get('/statuses')
-    async getStatuses() {
-        return this.reportsStatusService.getAllStatuses();
+    @UseGuards(JwtAuthGuard)
+    @Put(':reportId')
+    async update(@Body(new JoiValidationPipe(ReportSchema, { update: true })) updateDto: updateReportDto,
+        @Param() params): Promise<Report> {
+        const { reportId } = params;
+        return this.reportsService.updateReport(reportId, updateDto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get(':reportId')
+    async getById(@Param() param): Promise<Report> {
+        const { reportId } = param;
+        return this.reportsService.getById(reportId);
     }
 
     /*     @UseGuards(JwtAuthGuard, PoliciesGuard)

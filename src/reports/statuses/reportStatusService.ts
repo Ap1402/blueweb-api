@@ -1,5 +1,6 @@
-import {Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientsService } from 'src/clients/clients.service';
+import { getPagingData } from 'src/utils/paginationService';
 import { ReportCategory } from '../categories/reportCategory.model';
 import { Report } from '../report.model';
 import { ReportStatus } from './reportStatus.model';
@@ -18,14 +19,20 @@ export class ReportStatusService {
         return await this.reportStatusRepository.create(statusDto);
     };
 
-    async getAllStatuses(): Promise<ReportStatus[]> {
-        this.logger.debug("Creating new Status");
-        return await this.reportStatusRepository.findAll();
+    async deactivateStatus(id: number): Promise<number> {
+        this.logger.debug("Deleting status");
+        return await this.reportStatusRepository.destroy({ where: { id: id } });
     };
 
-    async deactivateStatus(id: number): Promise<ReportStatus> {
-        this.logger.debug("Creating new Status");
-        return await this.reportStatusRepository.findByPk(id);
+    async getAllStatuses(condition, limit: number, offset: number, page: number) {
+        this.logger.debug("Getting all statuses");
+        const requests = await this.reportStatusRepository.findAndCountAll({
+            where: condition,
+            limit,
+            offset
+        });
+        const response = getPagingData(requests, page, limit);
+        return response;
     };
 
 

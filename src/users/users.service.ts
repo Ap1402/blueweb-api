@@ -88,5 +88,11 @@ export class UsersService {
         return result;
     }
 
+    async deactivate(id: number): Promise<User> {
+        const user = await this.usersRepository.findByPk(id);
+        user.isActive = false;
+        return await user.save();
+    }
+
 
 }

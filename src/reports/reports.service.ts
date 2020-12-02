@@ -1,7 +1,9 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Action } from 'src/casl/constants';
+import { Client } from 'src/clients/client.model';
 import { ClientsService } from 'src/clients/clients.service';
+import { getPagingData } from 'src/utils/paginationService';
 import { ReportCategory } from './categories/reportCategory.model';
 import { Report } from './report.model';
 import { ReportStatus } from './statuses/reportStatus.model';
@@ -43,12 +45,27 @@ export class ReportsService {
     }
   };
 
-  async getAll(): Promise<Report[]> {
-    return await this.reportsRepository.findAll();
+  async getAll(condition, limit: number, offset: number, page: number) {
+    this.logger.debug("Getting all reports");
+    const requests = await this.reportsRepository.findAndCountAll({
+      where: condition,
+      limit,
+      offset,
+      include: [{
+        model: ReportCategory
+      }, { model: ReportStatus }, { model: Client }]
+    });
+    const response = getPagingData(requests, page, limit);
+    return response;
   }
 
   async getByClient(clientId: number): Promise<Report[]> {
     return await this.reportsRepository.findAll({ where: { clientId } });
+  }
+
+
+  async getById(reportId: number): Promise<Report> {
+    return await this.reportsRepository.findByPk(reportId);
   }
 
   async updateReport(reportId: number, reportDto) {

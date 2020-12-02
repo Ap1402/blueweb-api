@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { Client } from 'src/clients/client.model';
 import { getPagingData } from 'src/utils/paginationService';
 import { createFactibilityDto } from './dto/create-factibility.dto';
 import { FactibilityRequest } from './factibility-request.model';
@@ -20,8 +21,7 @@ export class FactibilityRequestsService {
         const requests = await this.factibilityRequestsRepository.findAndCountAll({
             where: condition,
             limit,
-            offset
-        });
+            offset        });
         const response = getPagingData(requests, page, limit);
         return response;
     }
@@ -44,8 +44,8 @@ export class FactibilityRequestsService {
     }
 
 
-    async count(pending: boolean): Promise<number> {
-        return await this.factibilityRequestsRepository.count({ where: { pending } });
+    async count(pending): Promise<number> {
+        return await this.factibilityRequestsRepository.count({ where: pending });
     }
 
 }

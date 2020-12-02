@@ -5,16 +5,16 @@ export interface createClientDto {
     lastNames: string;
     address: string;
 
-    isEnterprise:number;
+    isEnterprise: number;
     commercialReason?: string;
-    socialReason?:string;
+    socialReason?: string;
 
     identification: string;
     dni: string;
     state: string;
-    city:string;
-    municipality:string;
+    city: string;
+    municipality: string;
     phone: string;
-    email:string;
+    email: string;
 
 }

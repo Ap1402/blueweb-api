@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { getPagination, getPagingData } from 'src/utils/paginationService';
 import { ReportCategory } from '../categories/reportCategory.model';
 import { Report } from '../report.model';
 import { createCategoryDto } from './category.dto';
@@ -16,13 +17,19 @@ export class ReportCategoryService {
         return await this.reportCategoryRepository.create(categoryDto);
     };
 
-    async getAllCategories(): Promise<ReportCategory[]> {
+    async getAllCategories(condition, limit: number, offset: number, page: number) {
         this.logger.debug("Getting all categories");
-        return await this.reportCategoryRepository.findAll();
+        const requests = await this.reportCategoryRepository.findAndCountAll({
+            where: condition,
+            limit,
+            offset
+        });
+        const response = getPagingData(requests, page, limit);
+        return response;
     };
 
     async deactivateCategories(id: number): Promise<number> {
-        this.logger.debug("Deactivating category");
+        this.logger.debug("Deleting category");
         return await this.reportCategoryRepository.destroy({ where: { id: id } });
     };
 

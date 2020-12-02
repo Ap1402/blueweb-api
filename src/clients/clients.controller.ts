@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards, UsePipes } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JoiValidationPipe } from 'src/utils/JoiValidationPipe';
-import { getPagination, getPagingData } from 'src/utils/paginationService';
+import { getPagination } from 'src/utils/paginationService';
 import { ClientsService } from './clients.service';
 import { createClientDto } from './dto/create-client.dto';
 import { clientSchema } from './validator/clients.validator';
@@ -44,7 +44,7 @@ export class ClientsController {
   @Put(':clientId')
   async updateClient(
     @Param() params,
-    @Body(new JoiValidationPipe(clientSchema, false)) updateClient: createClientDto) {
+    @Body(new JoiValidationPipe(clientSchema, true)) updateClient: createClientDto) {
 
     const { clientId } = params;
     return this.clientsService.updateClient(

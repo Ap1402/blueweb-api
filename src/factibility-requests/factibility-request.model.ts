@@ -39,12 +39,18 @@ export class FactibilityRequest extends Model<FactibilityRequest> {
         type: DataType.STRING,
         allowNull: false,
     })
+    requesterName: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
     requesterEmail: string;
 
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
-        defaultValue:false
+        defaultValue: false
     })
     wasEvaluated: boolean;
 

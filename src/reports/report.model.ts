@@ -1,4 +1,4 @@
-import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne, Association } from 'sequelize-typescript';
 import { Client } from 'src/clients/client.model';
 import { ReportCategory } from './categories/reportCategory.model';
 import { ReportStatus } from './statuses/reportStatus.model';
@@ -38,14 +38,22 @@ export class Report extends Model<Report> {
   @Column
   clientId: number;
 
-  @BelongsTo(() => Client, 'clientId')
+  @BelongsTo(() => Client, {
+    foreignKey: 'clientId',
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT'
+  })
   client: Client;
 
   @ForeignKey(() => ReportCategory)
   @Column
   categoryId: number;
 
-  @BelongsTo(() => ReportCategory, 'categoryId')
+  @BelongsTo(() => ReportCategory, {
+    foreignKey: 'categoryId',
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT'
+  })
   category: ReportCategory;
 
 
@@ -53,6 +61,10 @@ export class Report extends Model<Report> {
   @Column
   statusId: number;
 
-  @BelongsTo(() => ReportStatus, 'statusId')
+  @BelongsTo(() => ReportStatus, {
+    foreignKey: 'statusId',
+    onDelete: 'RESTRICT'
+  })
   status: ReportStatus;
+  
 }

@@ -13,7 +13,7 @@ import { Report } from './report.model';
 import { ReportsService } from './reports.service';
 import { ReportStatusService } from './statuses/reportStatusService';
 import { createStatusDto } from './statuses/status.dto';
-import { ReportSchema } from './validators/reports.validator';
+import { ReportSchema, StatusCategoryValidator } from './validators/reports.validator';
 
 @Controller('reports')
 export class ReportsController {
@@ -26,7 +26,7 @@ export class ReportsController {
     @UseGuards(JwtAuthGuard)
     @Post()
     async create(@Body(new JoiValidationPipe(ReportSchema, { update: false })) createReport,
-        @Request() req):Promise<Report> {
+        @Request() req): Promise<Report> {
         const { clientId } = req.user;
         return this.reportsService.createReport(createReport, clientId);
     }
@@ -50,13 +50,13 @@ export class ReportsController {
 
     @UseGuards(JwtAuthGuard)
     @Post('/categories')
-    async createCategory(@Body() createCategory: createCategoryDto) {
+    async createCategory(@Body(new JoiValidationPipe(StatusCategoryValidator, { category: true })) createCategory: createCategoryDto) {
         return this.reportsCategoryService.createCategory(createCategory);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('/statuses')
-    async createStatus(@Body() createStatus: createStatusDto) {
+    async createStatus(@Body(new JoiValidationPipe(StatusCategoryValidator, { category: false })) createStatus: createStatusDto) {
         return this.reportsStatusService.createStatus(createStatus);
     }
 

@@ -15,8 +15,8 @@ export class FactibilityRequestsController {
     }
 
     @Get()
-    async getAll(@Param() params) {
-        const { page, size } = params;
+    async getAll(@Query() query) {
+        const { page, size } = query;
         const condition = null;
 
         let { limit, offset } = getPagination(page, size);

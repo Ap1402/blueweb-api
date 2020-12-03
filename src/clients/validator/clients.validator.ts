@@ -20,14 +20,14 @@ export const clientSchema = Joi.object({
   isEnterprise: Joi.number().valid(0, 1),
 
   commercialReason: Joi.when("isEnterprise", {
-    is: '1',
+    is: 1,
     then: Joi.string().required(),
     otherwise: Joi.string().empty(''),
   }),
 
 
   socialReason: Joi.when("isEnterprise", {
-    is: '1',
+    is: 1,
     then: Joi.string().required(),
     otherwise: Joi.string().empty(''),
   }),

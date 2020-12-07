@@ -59,8 +59,19 @@ export class ReportsService {
     return response;
   }
 
-  async getByClient(clientId: number): Promise<Report[]> {
-    return await this.reportsRepository.findAll({ where: { clientId } });
+  async getByClient(limit: number, offset: number, page: number, clientId: number) {
+    this.logger.debug("Getting all reports by client");
+    const requests = await this.reportsRepository.findAndCountAll({
+      where: { clientId },
+      limit,
+      offset,
+      include: [{
+        model: ReportCategory
+      }, { model: ReportStatus }, { model: Client }]
+    });
+    const response = getPagingData(requests, page, limit);
+
+    return response;
   }
 
 
@@ -98,13 +109,5 @@ export class ReportsService {
       console.log('fallido')
     }
   }
-
-  async mock(user) {
-    console.log('pasado')
-  }
-
-
-
-
 
 }

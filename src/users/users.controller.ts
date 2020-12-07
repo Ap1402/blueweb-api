@@ -30,7 +30,8 @@ export class UsersController {
         return this.usersService.getAllUsers(condition, limit, offset, page);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadOwn, 'users'))
     @Get('/me')
     async getSelfUser(@Request() req) {
         const { userId } = req.user

@@ -23,7 +23,8 @@ export class ReportsController {
         private reportsStatusService: ReportStatusService,
     ) { }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.CreateOwn, 'report'))
     @Post()
     async create(@Body(new JoiValidationPipe(ReportSchema, { update: false })) createReport,
         @Request() req): Promise<Report> {
@@ -31,7 +32,8 @@ export class ReportsController {
         return this.reportsService.createReport(createReport, clientId);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadAny, 'report'))
     @Get()
     async getAll(@Query() query) {
         const { page, size } = query;
@@ -40,21 +42,25 @@ export class ReportsController {
         return this.reportsService.getAll(condition, limit, offset, page);
     }
 
-
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadOwn, 'report'))
     @Get('/me')
-    async getSelfClient(@Request() req) {
+    async getSelfClient(@Request() req, @Query() query) {
+        const { page, size } = query;
+        let { limit, offset } = getPagination(page, size);
         const { clientId } = req.user;
-        return this.reportsService.getByClient(clientId);
+        return this.reportsService.getByClient(limit, offset, page, clientId);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, 'reportCategory'))
     @Post('/categories')
     async createCategory(@Body(new JoiValidationPipe(StatusCategoryValidator, { category: true })) createCategory: createCategoryDto) {
         return this.reportsCategoryService.createCategory(createCategory);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, 'reportStatus'))
     @Post('/statuses')
     async createStatus(@Body(new JoiValidationPipe(StatusCategoryValidator, { category: false })) createStatus: createStatusDto) {
         return this.reportsStatusService.createStatus(createStatus);
@@ -78,19 +84,24 @@ export class ReportsController {
         return this.reportsStatusService.getAllStatuses(condition, limit, offset, page);
     }
 
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, 'reportStatus'))
     @Delete('/categories/:categoryId')
     async deleteCategory(@Param() params): Promise<number> {
         const { categoryId } = params;
         return this.reportsCategoryService.deactivateCategories(categoryId);
     }
 
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Delete, 'reportStatus'))
     @Delete('/statuses/:statusId')
     async deleteStatus(@Param() params): Promise<number> {
         const { statusId } = params;
         return this.reportsStatusService.deactivateStatus(statusId);
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.UpdateAny, 'reportStatus'))
     @Put(':reportId')
     async update(@Body(new JoiValidationPipe(ReportSchema, { update: true })) updateDto: updateReportDto,
         @Param() params): Promise<Report> {

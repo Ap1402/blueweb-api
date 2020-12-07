@@ -1,4 +1,4 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, DeletedAt, Model, Table } from 'sequelize-typescript';
 
 @Table
 export class ContactMessage extends Model<ContactMessage> {
@@ -23,7 +23,7 @@ export class ContactMessage extends Model<ContactMessage> {
 
     @Column({
         type: DataType.STRING,
-        allowNull:false
+        allowNull: false
     })
     email: string;
 
@@ -42,8 +42,12 @@ export class ContactMessage extends Model<ContactMessage> {
     @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
-        defaultValue:false
+        defaultValue: false
     })
     wasAnswered: boolean;
+
+
+    @DeletedAt
+    deletedAt: Date;
 
 }

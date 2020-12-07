@@ -1,4 +1,4 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, DeletedAt, Model, Table } from 'sequelize-typescript';
 
 @Table
 export class FactibilityRequest extends Model<FactibilityRequest> {
@@ -54,4 +54,6 @@ export class FactibilityRequest extends Model<FactibilityRequest> {
     })
     wasEvaluated: boolean;
 
+    @DeletedAt
+    deletedAt: Date;
 }

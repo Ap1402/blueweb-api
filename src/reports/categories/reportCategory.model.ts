@@ -1,4 +1,4 @@
-import { BelongsTo, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, DeletedAt, HasMany, Model, Table } from 'sequelize-typescript';
 import { Report } from '../report.model';
 
 @Table
@@ -25,4 +25,7 @@ export class ReportCategory extends Model<ReportCategory> {
 
   @HasMany(() => Report)
   reports: Report[];
+
+  @DeletedAt
+  deletedAt: Date;
 }

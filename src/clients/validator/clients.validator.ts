@@ -17,7 +17,17 @@ export const clientSchema = Joi.object({
     otherwise: Joi.string().max(30).required(),
   }),
 
-  isEnterprise: Joi.number().valid(0, 1),
+  isEnterprise: Joi.when("$update", {
+    is: Joi.boolean().valid(true).required(),
+    then: Joi.number().empty(''),
+    otherwise: Joi.number().valid(0, 1),
+  }),
+
+  password: Joi.when("$update", {
+    is: Joi.boolean().valid(true).required(),
+    then: Joi.string().required(),
+    otherwise: Joi.invalid(),
+  }),
 
   commercialReason: Joi.when("isEnterprise", {
     is: 1,

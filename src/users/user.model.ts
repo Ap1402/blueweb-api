@@ -1,4 +1,4 @@
-import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, ForeignKey, HasOne, Model, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, DeletedAt, ForeignKey, HasOne, Model, Table } from 'sequelize-typescript';
 import { Client } from 'src/clients/client.model';
 import { Role } from 'src/roles/roles.model';
 import * as bcrypt from 'bcrypt';
@@ -16,7 +16,7 @@ export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
-    unique:true
+    unique: true
   })
   username: string;
 
@@ -30,7 +30,7 @@ export class User extends Model<User> {
   set password(value: string) {
     this.setDataValue('password', value);
   };
-  
+
   @Column({ defaultValue: true })
   isActive: boolean;
 
@@ -45,19 +45,24 @@ export class User extends Model<User> {
   @Column
   roleId: number;
 
-  @HasOne(() => Role, 'roleId')
+  @BelongsTo(() => Role, 'roleId')
   role: Role;
 
   @BeforeUpdate
   @BeforeCreate
   static hashPassword(user: User) {
     user.password =
-    user.password && user.password != ""
-      ? bcrypt.hashSync(user.password, 10)
-      : "";
+      user.password && user.password != ""
+        ? bcrypt.hashSync(user.password, 10)
+        : "";
   }
 
-  comparePassword(password:string) {
+  comparePassword(password: string) {
     return bcrypt.compareSync(password, this.password);
   }
+
+
+
+  @DeletedAt
+  deletedAt: Date;
 }

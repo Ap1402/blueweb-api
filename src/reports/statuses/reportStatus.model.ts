@@ -1,4 +1,4 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, DeletedAt, HasMany, Model, Table } from 'sequelize-typescript';
 import { Report } from '../report.model';
 
 @Table
@@ -18,4 +18,7 @@ export class ReportStatus extends Model<ReportStatus> {
   name: string;
   @HasMany(() => Report)
   reports: Report[];
+  
+  @DeletedAt
+  deletedAt: Date;
 }

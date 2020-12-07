@@ -1,4 +1,4 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, DeletedAt, ForeignKey, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
 import { User } from 'src/users/user.model';
 
 @Table
@@ -19,12 +19,10 @@ export class Role extends Model<Role> {
 
   @Column({ defaultValue: true })
   isActive: boolean;
-  
-  @BelongsTo(() => User)
+
+  @HasMany(() => User)
   user: User;
 
-  @ForeignKey(() => User)
-  @Column
-  userId: number;
-
+  @DeletedAt
+  deletedAt: Date;
 }

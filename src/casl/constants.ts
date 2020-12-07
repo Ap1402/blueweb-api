@@ -7,13 +7,15 @@ export enum Action {
     Read = 'read',
     Update = 'update',
     Delete = 'delete',
+    CreateOwn = 'createOwn',
+    CreateAny = 'CreateAny',
     ReadOwn = 'readOwn',
     ReadAny = "readAny",
     DeleteAny = "deleteAny",
     DeleteOwn = "deleteOwn",
     UpdateOwn = "updateOwn",
-    UpdateAny ="updateAny",
-    
+    UpdateAny = "updateAny",
+
 }
 
 export const CHECK_POLICIES_KEY = 'check_policy';

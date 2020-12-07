@@ -1,4 +1,4 @@
-import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne, Association } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne, Association, DeletedAt } from 'sequelize-typescript';
 import { Client } from 'src/clients/client.model';
 import { ReportCategory } from './categories/reportCategory.model';
 import { ReportStatus } from './statuses/reportStatus.model';
@@ -66,5 +66,7 @@ export class Report extends Model<Report> {
     onDelete: 'RESTRICT'
   })
   status: ReportStatus;
-  
+
+  @DeletedAt
+  deletedAt: Date;
 }

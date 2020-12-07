@@ -1,4 +1,4 @@
-import { Column, DataType, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, DeletedAt, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
 import { Report } from 'src/reports/report.model';
 import { User } from 'src/users/user.model';
 
@@ -100,4 +100,7 @@ export class Client extends Model<Client> {
 
   @HasMany(() => Report)
   reports: Report[];
+
+  @DeletedAt
+  deletedAt: Date;
 }

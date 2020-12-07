@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable, Logger, Post } from '@ne
 import { getPagingData } from 'src/utils/paginationService';
 import { Client } from './client.model';
 import { createClientDto } from './dto/create-client.dto';
+import { updateClientSelfDto } from './dto/update-client-self.dto';
 
 @Injectable()
 export class ClientsService {
@@ -27,6 +28,22 @@ export class ClientsService {
 
   async updateClient(clientDto: createClientDto, id: number) {
     const client = await this.clientsRepository.findByPk(id)
+    if (!client) {
+      throw new HttpException('Parece que el cliente que intentas actualizar no existe', HttpStatus.NOT_FOUND);
+    }
+    for (const key of Object.keys(clientDto)) {
+      client[key] = clientDto[key];
+    }
+    await client.save();
+    return client;
+  }
+
+  async updateSelfClient(clientDto: updateClientSelfDto, id: number) {
+    const client = await this.clientsRepository.findByPk(id)
+    const user = await client.$get('user');
+    if (!user.comparePassword(clientDto.password)) {
+      throw new HttpException('La contraseña que ingresó no es correcta', HttpStatus.BAD_REQUEST);
+    }
     if (!client) {
       throw new HttpException('Parece que el cliente que intentas actualizar no existe', HttpStatus.NOT_FOUND);
     }
@@ -63,7 +80,7 @@ export class ClientsService {
     if (!client) {
       this.logger.debug('No client found with this dni');
 
-      throw new HttpException('Parece que el cliente que buscas no existe', HttpStatus.NOT_FOUND);
+      throw new HttpException('La cédula ingresada no coincide con ninguna de nuestros clientes, asegúrese de usar la del títular', HttpStatus.NOT_FOUND);
     }
     this.logger.debug('Success, returning client');
 

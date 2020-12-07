@@ -17,14 +17,14 @@ export const databaseProviders = [
         dialect: 'mysql',
         host: 'localhost',
         port: 3306,
-        database:"blue_web",
-        username:"blue-web-admin",
-        password:"2804"
+        database: "blue_web",
+        username: "blue-web-admin",
+        password: "2804"
       });
-      sequelize.addModels([Client, User, ReportCategory,ReportStatus,Report, Token,ContactMessage, Role, FactibilityRequest]);
-/*       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
- */      await sequelize.sync(/* {force:true} */)
-      await Role.create({name:'client'})
+      sequelize.addModels([Client, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, Role, FactibilityRequest]);
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
+      await sequelize.sync({ force: true })
+      await Role.create({ name: 'client' })
       return sequelize;
     },
   },

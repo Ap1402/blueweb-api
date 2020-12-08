@@ -37,3 +37,14 @@ export const StatusCategoryValidator = Joi.object({
     "any.required": `"{#key}" Es un campo requerido`,
     "string.alphanum": `"{#value}"  debe ser un valor alfanumérico`,
 });
+
+
+export const CommentsValidator = Joi.object({
+    comment: Joi.string().required(),
+}).messages({
+    "string.base": `"{#value}" debe ser un tipo de texto`,
+    "string.empty": `"{#value}" No puede ser un campo vacío`,
+    "string.max": `"{#value}" Debe tener un máximo de {#limit}`,
+    "any.required": `"{#key}" Es un campo requerido`,
+    "string.alphanum": `"{#value}"  debe ser un valor alfanumérico`,
+});

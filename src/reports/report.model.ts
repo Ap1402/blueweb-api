@@ -1,6 +1,8 @@
-import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne, Association, DeletedAt } from 'sequelize-typescript';
+import { Column, DataType, Model, Table, BelongsTo, ForeignKey, HasOne, Association, DeletedAt, HasMany } from 'sequelize-typescript';
 import { Client } from 'src/clients/client.model';
+import { User } from 'src/users/user.model';
 import { ReportCategory } from './categories/reportCategory.model';
+import { ReportComments } from './comments/reportComments.model';
 import { ReportStatus } from './statuses/reportStatus.model';
 
 @Table
@@ -29,11 +31,6 @@ export class Report extends Model<Report> {
   })
   supportMessageForClient: string;
 
-  @Column({
-    type: DataType.STRING,
-  })
-  supportMessageInner: string;
-
   @ForeignKey(() => Client)
   @Column
   clientId: number;
@@ -61,11 +58,27 @@ export class Report extends Model<Report> {
   @Column
   statusId: number;
 
+
   @BelongsTo(() => ReportStatus, {
     foreignKey: 'statusId',
     onDelete: 'RESTRICT'
   })
   status: ReportStatus;
+
+
+
+  @ForeignKey(() => User)
+  @Column
+  updatedBy: number;
+
+  @BelongsTo(() => User, {
+    foreignKey: 'updatedBy',
+    onDelete: 'RESTRICT'
+  })
+  updatedByUser: User;
+
+  @HasMany(() => ReportComments)
+  comments: ReportComments[]
 
   @DeletedAt
   deletedAt: Date;

@@ -4,6 +4,7 @@ import { Client } from 'src/clients/client.model';
 import { ContactMessage } from 'src/contact-messages/contact-messages.model';
 import { FactibilityRequest } from 'src/factibility-requests/factibility-request.model';
 import { ReportCategory } from 'src/reports/categories/reportCategory.model';
+import { ReportComments } from 'src/reports/comments/reportComments.model';
 import { Report } from 'src/reports/report.model';
 import { ReportStatus } from 'src/reports/statuses/reportStatus.model';
 import { Role } from 'src/roles/roles.model';
@@ -21,9 +22,9 @@ export const databaseProviders = [
         username: "blue-web-admin",
         password: "2804"
       });
-      sequelize.addModels([Client, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, Role, FactibilityRequest]);
-      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
-      await sequelize.sync({ force: true })
+      sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, Role, FactibilityRequest]);
+/*       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
+ */      await sequelize.sync(/* { force: true } */)
       await Role.create({ name: 'client' })
       return sequelize;
     },

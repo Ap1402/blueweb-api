@@ -79,7 +79,7 @@ export class ReportsService {
     return await this.reportsRepository.findByPk(reportId);
   }
 
-  async updateReport(reportId: number, reportDto) {
+  async updateReport(reportId: number, reportDto, userId: number) {
     this.logger.debug("Searching report by Id");
     const report = await this.reportsRepository.findByPk(reportId);
     if (!report) {
@@ -87,13 +87,14 @@ export class ReportsService {
     }
     this.logger.debug("Assigning values to found report");
 
-    report.supportMessageInner = reportDto.supportMessageInner;
     report.supportMessageForClient = reportDto.supportMessageForClient;
     report.priorityLevel = reportDto.priorityLevel;
 
     await report.$set('status', reportDto.statusId)
     await report.$set('category', reportDto.categoryId)
+
     this.logger.debug("Asignando updatedBy");
+    await report.$set('updatedByUser', userId)
 
     await report.save();
 

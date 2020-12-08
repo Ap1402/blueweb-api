@@ -5,7 +5,7 @@ import { User } from "src/users/user.model";
 import { Action } from "./constants";
 import { reqUser } from "./dto/req-user.dto";
 
-type Subjects = typeof User | Client | User | 'all' | 'client' | 'report' | 'status' | 'category' | 'reportStatus' | 'otherRoles' | 'users' | 'contactMessage' | 'reportCategory';
+type Subjects = typeof User | Client | User | 'all' | 'client' | 'report' | 'status' | 'reportComment' | 'category' | 'reportStatus' | 'otherRoles' | 'users' | 'contactMessage' | 'reportCategory';
 
 export type AppAbility = Ability<[Action, Subjects]>;
 
@@ -38,6 +38,8 @@ export class CaslAbilityFactory {
             can(Action.DeleteAny, 'client');
             can(Action.CreateAny, 'client');
             can(Action.Manage, 'contactMessage');
+            can(Action.Manage, 'reportComment');
+
         }
 
         return build();

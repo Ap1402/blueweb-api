@@ -16,6 +16,7 @@ export class ReportStatus extends Model<ReportStatus> {
     allowNull: false,
   })
   name: string;
+  
   @HasMany(() => Report)
   reports: Report[];
   

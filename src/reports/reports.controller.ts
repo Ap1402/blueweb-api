@@ -13,7 +13,10 @@ import { Report } from './report.model';
 import { ReportsService } from './reports.service';
 import { ReportStatusService } from './statuses/reportStatusService';
 import { createStatusDto } from './statuses/status.dto';
-import { ReportSchema, StatusCategoryValidator } from './validators/reports.validator';
+import { createCommentDto } from './comments/comment.dto';
+
+import { CommentsValidator, ReportSchema, StatusCategoryValidator } from './validators/reports.validator';
+import { ReportCommentsService } from './comments/reportCommentsService';
 
 @Controller('reports')
 export class ReportsController {
@@ -21,6 +24,8 @@ export class ReportsController {
     constructor(private reportsService: ReportsService,
         private reportsCategoryService: ReportCategoryService,
         private reportsStatusService: ReportStatusService,
+        private reportsCommentsService: ReportCommentsService,
+
     ) { }
 
     @UseGuards(JwtAuthGuard, PoliciesGuard)
@@ -57,6 +62,27 @@ export class ReportsController {
     @Post('/categories')
     async createCategory(@Body(new JoiValidationPipe(StatusCategoryValidator, { category: true })) createCategory: createCategoryDto) {
         return this.reportsCategoryService.createCategory(createCategory);
+    }
+
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Create, 'reportComment'))
+    @Post('/comments/:reportId')
+    async createComment(@Body(new JoiValidationPipe(CommentsValidator, {})) createCommentDto: createCommentDto, @Request() req, @Param() params) {
+        const { userId } = req.user;
+        const { reportId } = params;
+        createCommentDto.reportId = reportId
+        return this.reportsCommentsService.createComment(createCommentDto, userId);
+    }
+
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.Read, 'reportComment'))
+    @Get('/comments/:reportId')
+    async getCommentsByReportId(@Param() params, @Query() query) {
+        const { page, size } = query;
+        const { reportId } = params;
+        let { limit, offset } = getPagination(page, size);
+
+        return this.reportsCommentsService.getCommmentsByReportId(reportId, limit, offset, page);
     }
 
     @UseGuards(JwtAuthGuard, PoliciesGuard)
@@ -104,9 +130,11 @@ export class ReportsController {
     @CheckPolicies((ability: AppAbility) => ability.can(Action.UpdateAny, 'reportStatus'))
     @Put(':reportId')
     async update(@Body(new JoiValidationPipe(ReportSchema, { update: true })) updateDto: updateReportDto,
-        @Param() params): Promise<Report> {
+        @Param() params, @Request() req): Promise<Report> {
         const { reportId } = params;
-        return this.reportsService.updateReport(reportId, updateDto);
+        const { userId } = req.user;
+
+        return this.reportsService.updateReport(reportId, updateDto, userId);
     }
 
     @UseGuards(JwtAuthGuard)

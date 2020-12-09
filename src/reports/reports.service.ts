@@ -3,8 +3,11 @@ import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { Action } from 'src/casl/constants';
 import { Client } from 'src/clients/client.model';
 import { ClientsService } from 'src/clients/clients.service';
+import { User } from 'src/users/user.model';
 import { getPagingData } from 'src/utils/paginationService';
 import { ReportCategory } from './categories/reportCategory.model';
+import { ReportComments } from './comments/reportComments.model';
+import { ReportCommentsService } from './comments/reportCommentsService';
 import { Report } from './report.model';
 import { ReportStatus } from './statuses/reportStatus.model';
 
@@ -16,6 +19,7 @@ export class ReportsService {
     @Inject('REPORTS_STATUS_REPOSITORY') private reportStatusRepository: typeof ReportStatus,
     @Inject('REPORTS_CATEGORY_REPOSITORY') private reportCategoryRepository: typeof ReportCategory,
     private clientsService: ClientsService,
+    private reportsCommentsService: ReportCommentsService,
     private caslAbilityFactory: CaslAbilityFactory) { }
 
   async createReport(averieDto, clientId: number) {
@@ -52,9 +56,13 @@ export class ReportsService {
       limit,
       offset,
       include: [{
-        model: ReportCategory
-      }, { model: ReportStatus }, { model: Client }]
+        model: ReportCategory, attributes: ['id', 'name']
+      },
+
+      { model: ReportStatus, attributes: ['id', 'name'] }, { model: Client, attributes: ['id', 'names', 'dni', 'identification'] },
+      ],
     });
+    console.log(requests)
     const response = getPagingData(requests, page, limit);
     return response;
   }
@@ -74,7 +82,6 @@ export class ReportsService {
     return response;
   }
 
-
   async getById(reportId: number): Promise<Report> {
     return await this.reportsRepository.findByPk(reportId);
   }
@@ -90,11 +97,21 @@ export class ReportsService {
     report.supportMessageForClient = reportDto.supportMessageForClient;
     report.priorityLevel = reportDto.priorityLevel;
 
-    await report.$set('status', reportDto.statusId)
-    await report.$set('category', reportDto.categoryId)
+    report.$set('status', reportDto.statusId)
+    report.$set('category', reportDto.categoryId)
+    if (report.changed()) {
+      this.logger.debug("Assigning logged user to updatedBy");
+      report.$set('updatedByUser', userId)
+    }
+    //Using trim for eliminating white spaces so it won't pass the conditional
+    if (reportDto.supportMessageInner.trim()) {
+      this.logger.debug("Creating new comment in report");
 
-    this.logger.debug("Asignando updatedBy");
-    await report.$set('updatedByUser', userId)
+      this.reportsCommentsService.createComment({
+        reportId: reportId,
+        comment: reportDto.supportMessageInner
+      }, userId)
+    }
 
     await report.save();
 

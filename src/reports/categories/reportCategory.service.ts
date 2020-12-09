@@ -17,12 +17,13 @@ export class ReportCategoryService {
         return await this.reportCategoryRepository.create(categoryDto);
     };
 
-    async getAllCategories(condition, limit: number, offset: number, page: number) {
+    async getAllCategories(condition, limit: number, offset: number, page: number, paranoid: boolean) {
         this.logger.debug("Getting all categories");
         const requests = await this.reportCategoryRepository.findAndCountAll({
             where: condition,
             limit,
-            offset
+            offset,
+            paranoid
         });
         const response = getPagingData(requests, page, limit);
         return response;

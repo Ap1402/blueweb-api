@@ -24,12 +24,13 @@ export class ReportStatusService {
         return await this.reportStatusRepository.destroy({ where: { id: id } });
     };
 
-    async getAllStatuses(condition, limit: number, offset: number, page: number) {
+    async getAllStatuses(condition, limit: number, offset: number, page: number, paranoid: boolean) {
         this.logger.debug("Getting all statuses");
         const requests = await this.reportStatusRepository.findAndCountAll({
             where: condition,
             limit,
-            offset
+            offset,
+            paranoid
         });
         const response = getPagingData(requests, page, limit);
         return response;

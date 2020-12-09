@@ -98,7 +98,7 @@ export class ReportsController {
         const size: number = query.size;
         const condition = null;
         let { limit, offset } = getPagination(page, size);
-        return this.reportsCategoryService.getAllCategories(condition, limit, offset, page);
+        return this.reportsCategoryService.getAllCategories(condition, limit, offset, page, true);
     }
 
     @Get('/statuses')
@@ -107,7 +107,25 @@ export class ReportsController {
         const size: number = query.size;
         const condition = null;
         let { limit, offset } = getPagination(page, size);
-        return this.reportsStatusService.getAllStatuses(condition, limit, offset, page);
+        return this.reportsStatusService.getAllStatuses(condition, limit, offset, page, true);
+    }
+
+    @Get('/categories/all')
+    async getAllCategories(@Query() query) {
+        const page: number = query.page;
+        const size: number = query.size;
+        const condition = null;
+        let { limit, offset } = getPagination(page, size);
+        return this.reportsCategoryService.getAllCategories(condition, limit, offset, page, false);
+    }
+
+    @Get('/statuses/all')
+    async getAllStatuses(@Query() query) {
+        const page: number = query.page;
+        const size: number = query.size;
+        const condition = null;
+        let { limit, offset } = getPagination(page, size);
+        return this.reportsStatusService.getAllStatuses(condition, limit, offset, page, false);
     }
 
     @UseGuards(JwtAuthGuard, PoliciesGuard)
@@ -150,9 +168,6 @@ export class ReportsController {
         async test(@Request() req) {
             return this.reportsService.mock(req.user);
         } */
-
-
-
 
 }
 

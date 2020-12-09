@@ -7,7 +7,7 @@ export const ReportSchema = Joi.object({
     categoryId: Joi.number().required(),
     statusId: Joi.number().empty(''),
     supportMessageForClient: Joi.string(),
-    supportMessageInner: Joi.string(),
+    supportMessageInner: Joi.string().empty(''),
     priorityLevel: Joi.number()
 }).messages({
     "string.base": `"{#value}" debe ser un tipo de texto`,

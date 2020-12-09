@@ -1,8 +1,9 @@
 import { createClientDto } from 'src/clients/dto/create-client.dto';
 
-export const getPagination = (page: number, size: number) => {
+export const getPagination = (page, size: number) => {
   const limit: number = size ? +size : 5;
-  const offset: number = page ? page * limit : 0;
+  const offset: number = page ? parseInt(page) * limit : 0;
+  console.log(offset, limit, page * limit, size)
   return { limit, offset };
 };
 

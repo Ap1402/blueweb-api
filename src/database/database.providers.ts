@@ -25,7 +25,13 @@ export const databaseProviders = [
       sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, Role, FactibilityRequest]);
 /*       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
  */      await sequelize.sync(/* { force: true } */)
-      await Role.create({ name: 'client' })
+      /*  await ReportStatus.create({ name: 'Pendiente' })
+       await ReportCategory.create({ name: 'Falla total del servicio', defaultPriorityLevel: 10 })
+       await ReportCategory.create({ name: 'Pago no registrado', defaultPriorityLevel: 10 })
+       await ReportCategory.create({ name: 'Lentitud del servicio', defaultPriorityLevel: 10 })
+ 
+ 
+       await Role.create({ name: 'client' }) */
       return sequelize;
     },
   },

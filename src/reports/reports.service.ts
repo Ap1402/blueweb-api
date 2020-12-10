@@ -10,6 +10,7 @@ import { ReportComments } from './comments/reportComments.model';
 import { ReportCommentsService } from './comments/reportCommentsService';
 import { Report } from './report.model';
 import { ReportStatus } from './statuses/reportStatus.model';
+import { Op } from 'sequelize'
 
 @Injectable()
 export class ReportsService {
@@ -51,18 +52,44 @@ export class ReportsService {
 
   async getAll(condition, limit: number, offset: number, page: number) {
     this.logger.debug("Getting all reports");
+    var where = {}
+
+    if (condition.client) {
+      where = {
+        ...where,
+        [Op.or]: [{
+          '$client.names$': {
+            [Op.like]: `%${condition.client}%`
+          }
+        }, {
+          '$client.lastNames$': {
+            [Op.like]: `%${condition.client}%`
+          }
+        }]
+      }
+    }
+
+    if (condition.dni) {
+      where = {
+        ...where,
+        '$client.dni$': {
+          [Op.like]: `${condition.dni}%`
+        }
+      }
+    }
+
     const requests = await this.reportsRepository.findAndCountAll({
-      where: condition,
+      order: [
+        [condition.orderBy, condition.order],
+      ],
+      where,
       limit,
       offset,
       include: [{
         model: ReportCategory, attributes: ['id', 'name']
-      },
-
-      { model: ReportStatus, attributes: ['id', 'name'] }, { model: Client, attributes: ['id', 'names', 'dni', 'identification'] },
+      }, { model: ReportStatus, attributes: ['id', 'name'] }, { model: Client, attributes: ['id', 'names', 'dni', 'identification'] }
       ],
     });
-    console.log(requests)
     const response = getPagingData(requests, page, limit);
     return response;
   }
@@ -104,7 +131,7 @@ export class ReportsService {
       report.$set('updatedByUser', userId)
     }
     //Using trim for eliminating white spaces so it won't pass the conditional
-    if (reportDto.supportMessageInner.trim()) {
+    if (reportDto.supportMessageInner && reportDto.supportMessageInner.trim()) {
       this.logger.debug("Creating new comment in report");
 
       this.reportsCommentsService.createComment({

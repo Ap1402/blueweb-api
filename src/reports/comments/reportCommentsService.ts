@@ -26,19 +26,16 @@ export class ReportCommentsService {
         return comment
     };
 
-    async getCommmentsByReportId(reportId: number, limit: number, offset: number, page: number) {
+    async getCommmentsByReportId(reportId: number) {
         this.logger.debug("Creating new comment");
         const report = await this.reportsRepository.findByPk(reportId);
 
-        const comments = await this.reportCommentsRepository.findAndCountAll({
+        const comments = await this.reportCommentsRepository.findAll({
             where: { reportId: report.id },
-            limit,
-            offset,
             include: [{ model: User, attributes: ['id', 'username'] }]
         });
 
-        const response = getPagingData(comments, page, limit);
-        return response
+        return comments
     };
 
 

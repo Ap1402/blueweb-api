@@ -3,6 +3,7 @@ import { getPagingData } from 'src/utils/paginationService';
 import { Client } from './client.model';
 import { createClientDto } from './dto/create-client.dto';
 import { updateClientSelfDto } from './dto/update-client-self.dto';
+import { Op } from 'sequelize'
 
 @Injectable()
 export class ClientsService {
@@ -56,8 +57,33 @@ export class ClientsService {
 
 
   async getAllClients(condition, limit: number, offset: number, page: number) {
+    var where = {}
+
+    /*   if (condition.names) {
+        where = {
+          ...where,
+          [Op.or]: [{
+            names: {
+              [Op.like]: `%${condition.names}%`
+            }
+          }, {
+            lastNames: {
+              [Op.like]: `%${condition.names}%`
+            }
+          }]
+        }
+      } */
+    if (condition.dni) {
+      where = {
+        ...where,
+        dni: {
+          [Op.like]: `%${condition.dni}%`
+        }
+      }
+    }
+
     const clients = await this.clientsRepository.findAndCountAll({
-      where: condition,
+      where,
       limit,
       offset
     });

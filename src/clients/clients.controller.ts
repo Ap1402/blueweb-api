@@ -24,8 +24,23 @@ export class ClientsController {
   @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadAny, 'client'))
   @Get()
   async getAll(@Query() query) {
-    const { page, size } = query;
-    const condition = null;
+    const { page, size, name, dni } = query;
+
+    var condition = {};
+
+    if (name) {
+      condition = {
+        ...condition,
+        names: name
+      }
+    }
+
+    if (dni) {
+      condition = {
+        ...condition,
+        dni: dni
+      }
+    }
 
     let { limit, offset } = getPagination(page, size);
 

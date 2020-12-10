@@ -14,7 +14,6 @@ import { ReportsService } from './reports.service';
 import { ReportStatusService } from './statuses/reportStatusService';
 import { createStatusDto } from './statuses/status.dto';
 import { createCommentDto } from './comments/comment.dto';
-
 import { CommentsValidator, ReportSchema, StatusCategoryValidator } from './validators/reports.validator';
 import { ReportCommentsService } from './comments/reportCommentsService';
 
@@ -41,8 +40,35 @@ export class ReportsController {
     @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadAny, 'report'))
     @Get()
     async getAll(@Query() query) {
-        const { page, size } = query;
-        const condition = null;
+
+        const { page, size, dni, client, orderBy, order } = query;
+
+        var condition = {};
+
+        if (client) {
+            condition = {
+                ...condition,
+                client: client
+            }
+        }
+
+        if (dni) {
+            condition = {
+                ...condition,
+                dni: dni
+            }
+        }
+
+        condition = {
+            ...condition,
+            orderBy: orderBy ? orderBy : 'priorityLevel'
+        }
+
+        condition = {
+            ...condition,
+            order: order ? order : 'desc'
+        }
+
         let { limit, offset } = getPagination(page, size);
         return this.reportsService.getAll(condition, limit, offset, page);
     }
@@ -82,7 +108,7 @@ export class ReportsController {
         const { reportId } = params;
         let { limit, offset } = getPagination(page, size);
 
-        return this.reportsCommentsService.getCommmentsByReportId(reportId, limit, offset, page);
+        return this.reportsCommentsService.getCommmentsByReportId(reportId);
     }
 
     @UseGuards(JwtAuthGuard, PoliciesGuard)

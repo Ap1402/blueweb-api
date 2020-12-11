@@ -10,9 +10,10 @@ import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { CaslModule } from './casl/casl.module';
 import { FactibilityRequestsModule } from './factibility-requests/factibility-requests.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
-  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule],
+  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule, MailerModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -126,10 +126,12 @@ export class ReportsService {
 
     report.$set('status', reportDto.statusId)
     report.$set('category', reportDto.categoryId)
+
     if (report.changed()) {
       this.logger.debug("Assigning logged user to updatedBy");
       report.$set('updatedByUser', userId)
     }
+
     //Using trim for eliminating white spaces so it won't pass the conditional
     if (reportDto.supportMessageInner && reportDto.supportMessageInner.trim()) {
       this.logger.debug("Creating new comment in report");

@@ -21,8 +21,20 @@ export class ContactMessagesController {
 
     @Get()
     async getAll(@Query() query) {
-        const { page, size } = query;
-        const condition = null;
+        const { page, size, wasAnswered, dni } = query;
+        var condition = {};
+        if (wasAnswered) {
+            condition = {
+                ...condition,
+                wasAnswered: wasAnswered
+            }
+        }
+        if (dni) {
+            condition = {
+                ...condition,
+                dni: dni
+            }
+        }
         let { limit, offset } = getPagination(page, size);
         return this.contactMessagesService.getAll(condition, limit, offset, page);
     }

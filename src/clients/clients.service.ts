@@ -4,6 +4,7 @@ import { Client } from './client.model';
 import { createClientDto } from './dto/create-client.dto';
 import { updateClientSelfDto } from './dto/update-client-self.dto';
 import { Op } from 'sequelize'
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class ClientsService {
@@ -11,6 +12,8 @@ export class ClientsService {
 
   constructor(
     @Inject('CLIENTS_REPOSITORY') private clientsRepository: typeof Client,
+    private mailerService: MailerService,
+
   ) { }
 
   async createClient(clientDto: createClientDto) {
@@ -23,6 +26,7 @@ export class ClientsService {
     };
     this.logger.debug('No client found with designed dni, calling sequelize create function for new client');
     const newClient = await this.clientsRepository.create(clientDto);
+    this.mailerService.sendRegisterEmail(newClient.email)
     return newClient;
   }
 

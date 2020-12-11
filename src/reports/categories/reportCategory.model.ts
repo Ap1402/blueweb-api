@@ -23,6 +23,13 @@ export class ReportCategory extends Model<ReportCategory> {
   })
   defaultPriorityLevel: string;
 
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  })
+  isDeletable: string;
+  
   @HasMany(() => Report)
   reports: Report[];
 

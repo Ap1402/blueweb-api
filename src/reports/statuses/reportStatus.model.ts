@@ -16,10 +16,18 @@ export class ReportStatus extends Model<ReportStatus> {
     allowNull: false,
   })
   name: string;
-  
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  })
+  isDeletable: string;
+
+
   @HasMany(() => Report)
   reports: Report[];
-  
+
   @DeletedAt
   deletedAt: Date;
 }

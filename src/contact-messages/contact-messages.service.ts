@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Op } from 'sequelize';
 import { getPagingData } from 'src/utils/paginationService';
 import { ContactMessage } from './contact-messages.model';
 import { createMessageDto } from './dto/createMessage.dto';
@@ -15,8 +16,25 @@ export class ContactMessagesService {
     }
 
     async getAll(condition, limit: number, offset: number, page: number) {
+        var where = {}
+        if (condition.dni) {
+            where = {
+                ...where,
+                name: {
+                    [Op.like]: `%${condition.dni}%`
+                }
+            }
+        }
+
+        if (condition.wasAnswered) {
+            where = {
+                ...where,
+                wasAnswered: condition.wasAnswered
+            }
+        }
+
         const messages = await this.contactMessagesRepository.findAndCountAll({
-            where: condition,
+            where,
             limit,
             offset
         });

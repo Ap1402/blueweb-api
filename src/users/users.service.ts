@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { Client } from 'src/clients/client.model';
 import { ClientsService } from 'src/clients/clients.service';
+import { MailerService } from 'src/mailer/mailer.service';
 import { Role } from 'src/roles/roles.model';
 import { getPagingData } from 'src/utils/paginationService';
 import { createUserDto } from './dto/create-user.dto';
 import { User } from './user.model';
+const nodemailer = require("nodemailer");
 
 @Injectable()
 export class UsersService {
@@ -13,6 +15,7 @@ export class UsersService {
     constructor(
         @Inject('USERS_REPOSITORY') private usersRepository: typeof User,
         private clientsService: ClientsService,
+        private mailerService: MailerService,
         @Inject('ROLES_REPOSITORY') private rolesRepository: typeof Role,
     ) { }
 
@@ -40,7 +43,7 @@ export class UsersService {
 
         const result: User = await client.$create('user', newUserData);
         this.logger.log('Setting client role')
-        await result.$set('role', 1)
+        await result.$set('role', 1);
         return result;
     }
 
@@ -51,8 +54,11 @@ export class UsersService {
             offset,
             include: [{
                 model: Client,
-                as: 'client'
-            }]
+                as: 'client',
+                attributes: ['names', 'lastNames', 'dni', 'identification', 'email']
+            }],
+            attributes: { exclude: ['password'] }
+
         });
         const response = getPagingData(users, page, limit);
         return response;

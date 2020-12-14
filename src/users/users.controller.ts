@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { createUserDto } from './dto/create-user.dto';
 import { getPagination } from 'src/utils/paginationService';
@@ -30,6 +30,17 @@ export class UsersController {
         return this.usersService.getAllUsers(condition, limit, offset, page);
     }
 
+
+    @UseGuards(JwtAuthGuard, PoliciesGuard)
+    @CheckPolicies((ability: AppAbility) => ability.can(Action.UpdateAny, 'users'))
+    @Put('/:userId')
+    async updateClientUser(@Body() createUser: createUserDto,
+        @Param() params) {
+        const { userId } = params;
+        return this.usersService.updateClientUser(createUser, userId);
+    }
+
+
     @UseGuards(JwtAuthGuard, PoliciesGuard)
     @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadOwn, 'users'))
     @Get('/me')
@@ -44,6 +55,5 @@ export class UsersController {
     async createOtherRoles(@Body(new JoiValidationPipe(userSchema, { create: true })) createUser: createUserDto) {
         return this.usersService.createUserOther(createUser);
     }
-
 
 }

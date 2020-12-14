@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { getPagingData } from 'src/utils/paginationService';
 import { ContactMessage } from './contact-messages.model';
 import { createMessageDto } from './dto/createMessage.dto';
+import { ContactMessagesReasons } from './reasons/contactMessagesReasons.model';
 
 @Injectable()
 export class ContactMessagesService {
@@ -12,7 +13,9 @@ export class ContactMessagesService {
     ) { }
 
     async create(createMessageDto: createMessageDto): Promise<ContactMessage> {
-        return await this.contactMessagesRepository.create(createMessageDto)
+        const result = await this.contactMessagesRepository.create(createMessageDto)
+
+        return result
     }
 
     async getAll(condition, limit: number, offset: number, page: number) {
@@ -36,8 +39,11 @@ export class ContactMessagesService {
         const messages = await this.contactMessagesRepository.findAndCountAll({
             where,
             limit,
-            offset
-        });
+            offset,
+            include: [{
+                model: ContactMessagesReasons, attributes: ['name']
+            }]
+        })
         const response = getPagingData(messages, page, limit);
         return response;
     }

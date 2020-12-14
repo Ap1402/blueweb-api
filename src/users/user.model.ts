@@ -65,4 +65,9 @@ export class User extends Model<User> {
 
   @DeletedAt
   deletedAt: Date;
+
+  toJSON() {
+
+    return { ...super.toJSON(), password: null };
+  }
 }

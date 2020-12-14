@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { MailerService } from 'src/mailer/mailer.service';
 import { getPagingData } from 'src/utils/paginationService';
 import { createFactibilityDto } from './dto/create-factibility.dto';
 import { FactibilityRequest } from './factibility-request.model';
@@ -8,12 +9,18 @@ export class FactibilityRequestsService {
     private readonly logger = new Logger(FactibilityRequestsService.name);
 
     constructor(
-        @Inject('FACTIBILITY_REQUESTS_REPOSITORY') private factibilityRequestsRepository: typeof FactibilityRequest
+        @Inject('FACTIBILITY_REQUESTS_REPOSITORY') private factibilityRequestsRepository: typeof FactibilityRequest,
+        private mailerService: MailerService,
+
     ) { }
 
     async create(createDto: createFactibilityDto): Promise<FactibilityRequest> {
         this.logger.debug('Creating new factibility request')
-        return await this.factibilityRequestsRepository.create(createDto)
+        const result = await this.factibilityRequestsRepository.create(createDto);
+        if (result) {
+            await this.mailerService.sendFactibilityRegisteredEmail(result.requesterEmail);
+        }
+        return result
     }
 
     async getAllRequests(condition, limit: number, offset: number, page: number) {

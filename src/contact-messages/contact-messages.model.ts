@@ -1,4 +1,5 @@
-import { Column, DataType, DeletedAt, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, DeletedAt, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { ContactMessagesReasons } from './reasons/contactMessagesReasons.model';
 
 @Table
 export class ContactMessage extends Model<ContactMessage> {
@@ -31,12 +32,6 @@ export class ContactMessage extends Model<ContactMessage> {
         type: DataType.STRING,
         allowNull: false
     })
-    reason: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false
-    })
     message: string;
 
     @Column({
@@ -46,6 +41,15 @@ export class ContactMessage extends Model<ContactMessage> {
     })
     wasAnswered: boolean;
 
+    @ForeignKey(() => ContactMessagesReasons)
+    @Column
+    reasonId: number;
+
+    @BelongsTo(() => ContactMessagesReasons, {
+        foreignKey: 'reasonId',
+        onDelete: 'RESTRICT'
+    })
+    reason: ContactMessagesReasons;
 
     @DeletedAt
     deletedAt: Date;

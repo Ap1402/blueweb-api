@@ -5,6 +5,7 @@ import { MailerService } from 'src/mailer/mailer.service';
 import { Role } from 'src/roles/roles.model';
 import { getPagingData } from 'src/utils/paginationService';
 import { createUserDto } from './dto/create-user.dto';
+import { updateUserDto } from './dto/update-user.dto';
 import { User } from './user.model';
 const nodemailer = require("nodemailer");
 
@@ -45,6 +46,23 @@ export class UsersService {
         this.logger.log('Setting client role')
         await result.$set('role', 1);
         return result;
+    }
+
+    async updateClientUser(userDto: updateUserDto, userId: number) {
+        const user = await this.usersRepository.findByPk(userId);
+
+        if (!user) {
+            throw new HttpException('No se encontó un usuario con esta id', HttpStatus.NOT_FOUND);
+        };
+
+        this.logger.log('Updating user');
+
+        user.username = userDto.username;
+        user.roleId = userDto.roleId;
+        user.isActive = userDto.isActive ? true : false;
+
+        user.save();
+        return user;
     }
 
     async getAllUsers(condition, limit: number, offset: number, page: number) {

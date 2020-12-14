@@ -6,10 +6,14 @@ import { PoliciesGuard } from 'src/casl/policies.guard';
 import { getPagination } from 'src/utils/paginationService';
 import { ContactMessagesService } from './contact-messages.service';
 import { createMessageDto } from './dto/createMessage.dto';
+import { ContactMessagesReasonsService } from './reasons/contactMessagesReasons.service';
+import { createReason } from './reasons/reason.dto';
 
 @Controller('contact-messages')
 export class ContactMessagesController {
-    constructor(private contactMessagesService: ContactMessagesService) { }
+    constructor(private contactMessagesService: ContactMessagesService,
+        private contactMessagesReasonsService: ContactMessagesReasonsService,
+    ) { }
 
     @Post()
     async create(@Body() createMessageDto: createMessageDto) {
@@ -52,4 +56,13 @@ export class ContactMessagesController {
         return this.contactMessagesService.update(messageId, createMessageDto)
     }
 
+    @Post('/reasons')
+    async createReason(@Body() createReasonDto: createReason) {
+        return this.contactMessagesReasonsService.createReason(createReasonDto)
+    }
+
+    @Get('/reasons')
+    async getReasons() {
+        return this.contactMessagesReasonsService.getReasons()
+    }
 }

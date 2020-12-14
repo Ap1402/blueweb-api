@@ -23,7 +23,7 @@ export const clientSchema = Joi.object({
     otherwise: Joi.number().valid(0, 1),
   }),
 
-  password: Joi.when("$update", {
+  password: Joi.when("$updateSelf", {
     is: Joi.boolean().valid(true).required(),
     then: Joi.string().required(),
     otherwise: Joi.invalid(),

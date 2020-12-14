@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Token } from 'src/auth/token.model';
 import { Client } from 'src/clients/client.model';
 import { ContactMessage } from 'src/contact-messages/contact-messages.model';
+import { ContactMessagesReasons } from 'src/contact-messages/reasons/contactMessagesReasons.model';
 import { FactibilityRequest } from 'src/factibility-requests/factibility-request.model';
 import { ReportCategory } from 'src/reports/categories/reportCategory.model';
 import { ReportComments } from 'src/reports/comments/reportComments.model';
@@ -22,16 +23,16 @@ export const databaseProviders = [
         username: "blue-web-admin",
         password: "2804"
       });
-      sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, Role, FactibilityRequest]);
-      /*       await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
-       */     //await sequelize.sync({ force: true })
-      /*  await ReportStatus.create({ name: 'Pendiente' })
-       await ReportCategory.create({ name: 'Falla total del servicio', defaultPriorityLevel: 10 })
-       await ReportCategory.create({ name: 'Pago no registrado', defaultPriorityLevel: 10 })
-       await ReportCategory.create({ name: 'Lentitud del servicio', defaultPriorityLevel: 10 })
- 
-       await Role.create({ name: 'client' }) */
-/*       await sequelize.sync({ alter: true })
+      sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, ContactMessagesReasons, Role, FactibilityRequest]);
+   /*    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
+      await sequelize.sync({ force: true })
+      await ReportStatus.create({ name: 'Pendiente' })
+      await ReportCategory.create({ name: 'Falla total del servicio', defaultPriorityLevel: 10 })
+      await ReportCategory.create({ name: 'Pago no registrado', defaultPriorityLevel: 10 })
+      await ReportCategory.create({ name: 'Lentitud del servicio', defaultPriorityLevel: 10 }) */
+
+/*       await Role.create({ name: 'client' })
+ *//*       await sequelize.sync({ alter: true })
  */      return sequelize;
     },
   },

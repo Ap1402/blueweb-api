@@ -61,7 +61,7 @@ export class ClientsController {
   @Put('/me')
   async updateSelfClient(
     @Request() req,
-    @Body(new JoiValidationPipe(clientSchema, { update: true })) updateClient: updateClientSelfDto) {
+    @Body(new JoiValidationPipe(clientSchema, { update: true, updateSelf: true })) updateClient: updateClientSelfDto) {
 
     const { clientId } = req.user;
     return this.clientsService.updateSelfClient(
@@ -88,7 +88,7 @@ export class ClientsController {
   @Put(':clientId')
   async updateClient(
     @Param() params,
-    @Body(new JoiValidationPipe(clientSchema, { update: true })) updateClient: createClientDto) {
+    @Body(new JoiValidationPipe(clientSchema, { update: true, updateSelf: false })) updateClient: createClientDto) {
 
     const { clientId } = params;
     return this.clientsService.updateClient(

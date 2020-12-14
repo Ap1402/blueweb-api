@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-const nodemailer = require('nodemailer')
+import { transporter } from './constants';
 
 @Injectable()
 export class MailerService {
@@ -8,15 +8,6 @@ export class MailerService {
     }
 
     async sendRegisterEmail(registeredEmail: string) {
-        let transporter = nodemailer.createTransport({
-            host: "bluewebca.com",
-            port: 465,
-            secure: true, // true for 465, false for other ports
-            auth: {
-                user: 'mailer@bluewebca.com',
-                pass: 'O2Ti;1LF#Te(',
-            },
-        });
 
         let info = await transporter.sendMail({
             from: '"Blueweb 👻"<mailer@bluewebca.com>', // sender address
@@ -24,6 +15,20 @@ export class MailerService {
             subject: "Bienvenido a BlueWeb", // Subject line
             text: "Hello world?", // plain text body
             html: "<b>Bienvenido a Blueweb</b>", // html body
+        });
+
+        console.log("Message sent: %s", info.messageId);
+
+
+    }
+
+    async sendFactibilityRegisteredEmail(typedEmail: string) {
+        let info = await transporter.sendMail({
+            from: '"Blueweb 👻"<mailer@bluewebca.com>', // sender address
+            to: typedEmail, // list of receivers
+            subject: "Evaluación de factibilidad Blueweb", // Subject line
+            text: "Su solicitud de factibilidad ha sido registrada con éxito. Pronto nos pondremos en contacto con usted a través de este correo o el número teléfonico que ingresó", // plain text body
+            html: "<b>Su solicitud de factibilidad ha sido registrada con éxito. Pronto nos pondremos en contacto con usted a través de este correo o el número teléfonico que ingresó</b>", // html body
         });
 
         console.log("Message sent: %s", info.messageId);

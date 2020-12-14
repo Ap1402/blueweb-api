@@ -33,6 +33,7 @@ export class CaslAbilityFactory {
 
         if (user.role === 'support') {
             can(Action.UpdateAny, 'client');
+            can(Action.UpdateAny, 'users');
             can(Action.ReadAny, 'client');
             can(Action.CreateAny, 'client')
             can(Action.DeleteAny, 'client');

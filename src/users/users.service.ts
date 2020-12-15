@@ -59,7 +59,7 @@ export class UsersService {
 
         user.username = userDto.username;
         user.roleId = userDto.roleId;
-        user.isActive = userDto.isActive ? true : false;
+        user.isActive = parseInt(userDto.isActive) ? true : false;
 
         user.save();
         return user;
@@ -76,12 +76,10 @@ export class UsersService {
                 attributes: ['names', 'lastNames', 'dni', 'identification', 'email']
             }],
             attributes: { exclude: ['password'] }
-
         });
         const response = getPagingData(users, page, limit);
         return response;
     }
-
 
     async getUserById(id: number) {
         const user = await this.usersRepository.findByPk(id);
@@ -90,7 +88,6 @@ export class UsersService {
         }
         return user;
     }
-
 
     async createUserOther(createUserDto: createUserDto) {
         this.logger.debug('Searching for an user already registered with this username')

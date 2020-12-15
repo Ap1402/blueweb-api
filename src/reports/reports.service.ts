@@ -78,6 +78,13 @@ export class ReportsService {
       }
     }
 
+    if (condition.wasCompleted) {
+      where = {
+        ...where,
+        wasCompleted: condition.wasCompleted
+      }
+    }
+
     const requests = await this.reportsRepository.findAndCountAll({
       order: [
         [condition.orderBy, condition.order],
@@ -123,6 +130,7 @@ export class ReportsService {
 
     report.supportMessageForClient = reportDto.supportMessageForClient;
     report.priorityLevel = reportDto.priorityLevel;
+    report.wasCompleted = reportDto.wasCompleted;
 
     report.$set('status', reportDto.statusId)
     report.$set('category', reportDto.categoryId)

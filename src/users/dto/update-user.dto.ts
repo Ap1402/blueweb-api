@@ -2,6 +2,6 @@
 export interface updateUserDto {
     username: string;
     roleId?: number;
-    isActive?: number;
+    isActive?: string;
     clientId?: number;
 }

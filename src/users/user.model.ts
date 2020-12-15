@@ -52,16 +52,14 @@ export class User extends Model<User> {
   @BeforeCreate
   static hashPassword(user: User) {
     user.password =
-      user.password && user.password != ""
+      user.changed('password') && user.password != ""
         ? bcrypt.hashSync(user.password, 10)
-        : "";
+        : user.password != "" ? user.password : '';
   }
 
   comparePassword(password: string) {
     return bcrypt.compareSync(password, this.password);
   }
-
-
 
   @DeletedAt
   deletedAt: Date;

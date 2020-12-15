@@ -32,8 +32,8 @@ export const databaseProviders = [
       await ReportCategory.create({ name: 'Lentitud del servicio', defaultPriorityLevel: 10 }) */
 
 /*       await Role.create({ name: 'client' })
- *//*       await sequelize.sync({ alter: true })
- */      return sequelize;
+ */       await sequelize.sync({ alter: true })
+      return sequelize;
     },
   },
 ];

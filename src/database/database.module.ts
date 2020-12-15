@@ -8,5 +8,4 @@ import { databaseProviders } from './database.providers';
 })
 export class DatabaseModule {
 
-    
 }

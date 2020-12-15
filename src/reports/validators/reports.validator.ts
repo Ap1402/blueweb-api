@@ -8,7 +8,8 @@ export const ReportSchema = Joi.object({
     statusId: Joi.number().empty(''),
     supportMessageForClient: Joi.string(),
     supportMessageInner: Joi.string().empty(''),
-    priorityLevel: Joi.number()
+    priorityLevel: Joi.number(),
+    wasCompleted: Joi.number()
 }).messages({
     "string.base": `"{#value}" debe ser un tipo de texto`,
     "string.empty": `"{#key}" No puede ser un campo vacío`,

@@ -5,4 +5,5 @@ export interface updateReportDto {
     categoryId: number;
     priorityLevel: number;
     statusId: number;
+    wasCompleted: number;
 }

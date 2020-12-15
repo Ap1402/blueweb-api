@@ -41,7 +41,7 @@ export class ReportsController {
     @Get()
     async getAll(@Query() query) {
 
-        const { page, size, dni, client, orderBy, order } = query;
+        const { page, size, dni, client, orderBy, order, completed } = query;
 
         var condition = {};
 
@@ -51,14 +51,18 @@ export class ReportsController {
                 client: client
             }
         }
-
         if (dni) {
             condition = {
                 ...condition,
                 dni: dni
             }
         }
-
+        if (completed) {
+            condition = {
+                ...condition,
+                wasCompleted: completed
+            }
+        }
         condition = {
             ...condition,
             orderBy: orderBy ? orderBy : 'priorityLevel'

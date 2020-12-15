@@ -58,18 +58,22 @@ export class Report extends Model<Report> {
   @Column
   statusId: number;
 
-
   @BelongsTo(() => ReportStatus, {
     foreignKey: 'statusId',
     onDelete: 'RESTRICT'
   })
   status: ReportStatus;
 
-
-
   @ForeignKey(() => User)
   @Column
   updatedBy: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    defaultValue: 0
+  })
+  wasCompleted: number;
 
   @BelongsTo(() => User, {
     foreignKey: 'updatedBy',

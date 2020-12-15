@@ -20,6 +20,13 @@ export class ContactMessagesController {
         return this.contactMessagesService.create(createMessageDto)
     }
 
+    @Put('/:messageId')
+    async setToAnswered(@Body() createMessageDto: createMessageDto,
+        @Param() params) {
+        const { messageId } = params;
+        return this.contactMessagesService.update(messageId, createMessageDto)
+    }
+
     /*  @UseGuards(JwtAuthGuard, PoliciesGuard)
      @CheckPolicies((ability: AppAbility) => ability.can(Action.ReadAny, 'contactMessage')) */
 

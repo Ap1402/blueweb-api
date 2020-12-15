@@ -18,7 +18,7 @@ export class FactibilityRequestsService {
         this.logger.debug('Creating new factibility request')
         const result = await this.factibilityRequestsRepository.create(createDto);
         if (result) {
-            await this.mailerService.sendFactibilityRegisteredEmail(result.requesterEmail);
+            this.mailerService.sendFactibilityRegisteredEmail(result.requesterEmail);
         }
         return result
     }

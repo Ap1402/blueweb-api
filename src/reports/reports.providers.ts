@@ -12,12 +12,10 @@ export const reportsProvider = [
     provide: 'REPORTS_COMMENTS_REPOSITORY',
     useValue: ReportComments,
   },
-
   {
     provide: 'REPORTS_CATEGORY_REPOSITORY',
     useValue: ReportCategory,
   },
-
   {
     provide: 'REPORTS_STATUS_REPOSITORY',
     useValue: ReportStatus,

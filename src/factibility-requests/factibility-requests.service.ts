@@ -11,7 +11,6 @@ export class FactibilityRequestsService {
     constructor(
         @Inject('FACTIBILITY_REQUESTS_REPOSITORY') private factibilityRequestsRepository: typeof FactibilityRequest,
         private mailerService: MailerService,
-
     ) { }
 
     async create(createDto: createFactibilityDto): Promise<FactibilityRequest> {
@@ -24,8 +23,15 @@ export class FactibilityRequestsService {
     }
 
     async getAllRequests(condition, limit: number, offset: number, page: number) {
+        var where = {}
+        if (condition.wasEvaluated) {
+            where = {
+                ...where,
+                wasEvaluated: condition.wasEvaluated
+            }
+        }
         const requests = await this.factibilityRequestsRepository.findAndCountAll({
-            where: condition,
+            where,
             limit,
             offset
         });

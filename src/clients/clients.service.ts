@@ -32,6 +32,7 @@ export class ClientsService {
 
 
   async updateClient(clientDto: createClientDto, id: number) {
+    this.logger.debug('Updating client');
     const client = await this.clientsRepository.findByPk(id)
     if (!client) {
       throw new HttpException('Parece que el cliente que intentas actualizar no existe', HttpStatus.NOT_FOUND);

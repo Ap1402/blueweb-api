@@ -11,10 +11,11 @@ import { RolesModule } from './roles/roles.module';
 import { CaslModule } from './casl/casl.module';
 import { FactibilityRequestsModule } from './factibility-requests/factibility-requests.module';
 import { MailerModule } from './mailer/mailer.module';
+import { PayoutReportsModule } from './payout-reports/payout-reports.module';
 
 @Module({
-  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule, MailerModule],
+  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule, MailerModule, PayoutReportsModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

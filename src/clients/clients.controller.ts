@@ -89,7 +89,6 @@ export class ClientsController {
   async updateClient(
     @Param() params,
     @Body(new JoiValidationPipe(clientSchema, { update: true, updateSelf: false })) updateClient: createClientDto) {
-
     const { clientId } = params;
     return this.clientsService.updateClient(
       {
@@ -101,6 +100,8 @@ export class ClientsController {
         state: updateClient.state,
         phone: updateClient.phone,
         isEnterprise: updateClient.isEnterprise,
+        socialReason: updateClient.isEnterprise ? updateClient.socialReason : "",
+        commercialReason: updateClient.isEnterprise ? updateClient.commercialReason : "",
         municipality: updateClient.municipality,
         identification: updateClient.identification,
         email: updateClient.email

@@ -16,8 +16,15 @@ export class FactibilityRequestsController {
 
     @Get()
     async getAll(@Query() query) {
-        const { page, size } = query;
-        const condition = null;
+        const { page, size, wasEvaluated } = query;
+        var condition = {};
+
+        if (wasEvaluated) {
+            condition = {
+                ...condition,
+                wasEvaluated: wasEvaluated
+            }
+        }
 
         let { limit, offset } = getPagination(page, size);
 
@@ -26,8 +33,8 @@ export class FactibilityRequestsController {
 
     @Get('/count')
     async countRequests(@Query() query) {
-        const { pending } = query;
-        const condition = pending ? { pending: pending } : null;
+        const { wasEvaluated } = query;
+        const condition = wasEvaluated ? { wasEvaluated: wasEvaluated } : null;
         return this.factibilityRequestsService.count(condition)
     }
 
@@ -39,7 +46,7 @@ export class FactibilityRequestsController {
 
 
     @Put(':requestId')
-    async updateRequest(@Body() updateRequestDto: createFactibilityDto, @Param() params) {
+    async updateRequest(@Body(new JoiValidationPipe(FacitibilityRequestSchema, { create: false })) updateRequestDto: createFactibilityDto, @Param() params) {
         const { requestId } = params;
         return this.factibilityRequestsService.update(requestId, updateRequestDto)
     }

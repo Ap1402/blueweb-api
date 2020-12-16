@@ -6,7 +6,7 @@ import { MailerModule } from 'src/mailer/mailer.module';
 
 @Module({
   providers: [FactibilityRequestsService, ...factibilityRequest],
-  imports:[MailerModule],
+  imports: [MailerModule],
   controllers: [FactibilityRequestsController]
 })
-export class FactibilityRequestsModule {}
+export class FactibilityRequestsModule { }

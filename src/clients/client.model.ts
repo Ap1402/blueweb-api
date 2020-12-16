@@ -1,4 +1,5 @@
 import { Column, DataType, DeletedAt, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
+import { PayoutReports } from 'src/payout-reports/payout-reports.model';
 import { Report } from 'src/reports/report.model';
 import { User } from 'src/users/user.model';
 
@@ -85,7 +86,7 @@ export class Client extends Model<Client> {
   })
   municipality: string;
 
-  
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -100,6 +101,9 @@ export class Client extends Model<Client> {
 
   @HasMany(() => Report)
   reports: Report[];
+
+  @HasMany(() => PayoutReports)
+  payoutReports: PayoutReports[];
 
   @DeletedAt
   deletedAt: Date;

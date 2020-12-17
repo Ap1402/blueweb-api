@@ -5,4 +5,5 @@ export interface createPayoutReport {
     bankDestiny: string;
     accountOwnerDni: string;
     accountOwnerName: string;
+    amount: string;
 }

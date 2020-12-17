@@ -24,7 +24,8 @@ export const databaseProviders = [
         username: "blue-web-admin",
         password: "2804"
       });
-      sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage, ContactMessagesReasons, Role, FactibilityRequest, PayoutReports]);
+      sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage,
+        ContactMessagesReasons, Role, FactibilityRequest, PayoutReports]);
       /*    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
          await sequelize.sync({ force: true })
          await ReportStatus.create({ name: 'Pendiente' })

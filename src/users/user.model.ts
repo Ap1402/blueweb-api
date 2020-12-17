@@ -1,7 +1,8 @@
-import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, DeletedAt, ForeignKey, HasOne, Model, Table } from 'sequelize-typescript';
+import { BeforeCreate, BeforeUpdate, BelongsTo, Column, DataType, DeletedAt, ForeignKey, HasMany, HasOne, Model, Table } from 'sequelize-typescript';
 import { Client } from 'src/clients/client.model';
 import { Role } from 'src/roles/roles.model';
 import * as bcrypt from 'bcrypt';
+import { PayoutReports } from 'src/payout-reports/payout-reports.model';
 
 @Table
 export class User extends Model<User> {
@@ -47,6 +48,9 @@ export class User extends Model<User> {
 
   @BelongsTo(() => Role, 'roleId')
   role: Role;
+
+  @HasMany(() => PayoutReports)
+  payoutReports: PayoutReports[]
 
   @BeforeUpdate
   @BeforeCreate

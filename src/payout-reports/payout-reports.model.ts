@@ -49,6 +49,12 @@ export class PayoutReports extends Model<PayoutReports> {
     amount: string;
 
     @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
+    commerceCode: string;
+
+    @Column({
         type: DataType.BOOLEAN,
         allowNull: false,
         defaultValue: false

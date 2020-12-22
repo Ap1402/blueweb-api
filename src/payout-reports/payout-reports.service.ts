@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Op } from 'sequelize';
 import { Client } from 'src/clients/client.model';
+import { User } from 'src/users/user.model';
 import { getPagingData } from 'src/utils/paginationService';
 import { createPayoutReport } from './dto/create-payout-report.dto';
 import { updatePayoutReport } from './dto/update-payout-report.dto';
@@ -20,7 +21,6 @@ export class PayoutReportsService {
         await result.$set('client', clientId)
         return result
     }
-
 
     async getPayoutById(payoutId: number) {
         this.logger.debug('Getting report by id')
@@ -45,6 +45,12 @@ export class PayoutReportsService {
         this.logger.debug('Approving payout')
         const payout = await this.payoutReportsRepository.findByPk(payoutId);
         payout.isApproved = parseInt(payoutStatus.isApproved) ? true : false;
+        if (payout.isApproved) {
+            payout.approvedAt = new Date();
+        }
+
+        payout.commerceCode = payoutStatus.commerceCode;
+
         payout.$set('user', userId)
         return await payout.save();
     }
@@ -94,7 +100,7 @@ export class PayoutReportsService {
             offset,
             include: [{
                 model: Client, attributes: ['id', 'names', 'lastNames', 'dni']
-            }],
+            }, { model: User, attributes: ['username'] }],
         });
         const response = getPagingData(payouts, page, limit);
         return response;

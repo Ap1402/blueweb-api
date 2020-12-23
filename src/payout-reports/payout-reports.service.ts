@@ -28,10 +28,24 @@ export class PayoutReportsService {
         return payout
     }
 
-    async getPayoutCurrentClient(clientId: number, limit: number, offset: number, page: number) {
+    async getPayoutCurrentClient(condition, clientId: number, limit: number, offset: number, page: number) {
         this.logger.debug('Getting report for current client')
+        var where = {}
+
+        if (condition.isApproved) {
+            where = {
+                ...where,
+                isApproved: condition.isApproved
+            }
+        }
+
+        where = {
+            ...where,
+            clientId: clientId
+        }
+
         const payouts = await this.payoutReportsRepository.findAndCountAll({
-            where: { clientId: clientId },
+            where: where,
             limit,
             offset
         });
@@ -47,9 +61,9 @@ export class PayoutReportsService {
         payout.isApproved = parseInt(payoutStatus.isApproved) ? true : false;
         if (payout.isApproved) {
             payout.approvedAt = new Date();
+        } else {
+            payout.commerceCode = '';
         }
-
-        payout.commerceCode = payoutStatus.commerceCode;
 
         payout.$set('user', userId)
         return await payout.save();

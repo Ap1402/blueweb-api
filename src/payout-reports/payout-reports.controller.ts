@@ -20,7 +20,7 @@ export class PayoutReportsController {
     @UseGuards(JwtAuthGuard)
     async changePayoutStatus(@Body() payoutStatus: updatePayoutReport, @Request() req, @Param() params) {
         const { userId } = req.user;
-        const { payoutId } = params
+        const { payoutId } = params;
         return this.payoutReportsService.changePayoutStatus(userId, payoutId, payoutStatus)
     }
 
@@ -66,18 +66,22 @@ export class PayoutReportsController {
     @Get('/me')
     @UseGuards(JwtAuthGuard)
     async getPayoutCurrentClient(@Request() req, @Query() query) {
-        const { page, size } = query;
+        const { page, size, isApproved } = query;
         const { clientId } = req.user;
+        var condition = {};
         let { limit, offset } = getPagination(page, size);
+        condition = {
+            ...condition,
+            isApproved: isApproved ? isApproved : '0'
+        }
 
-        return this.payoutReportsService.getPayoutCurrentClient(clientId, limit, offset, page);
+        return this.payoutReportsService.getPayoutCurrentClient(condition, clientId, limit, offset, page);
     }
 
     @Get('/:payoutId')
     @UseGuards(JwtAuthGuard)
     async getPayoutById(@Query() query) {
         const { payoutId } = query;
-
         return this.payoutReportsService.getPayoutById(payoutId);
     }
 

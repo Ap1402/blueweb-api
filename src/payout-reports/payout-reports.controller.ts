@@ -1,19 +1,38 @@
 import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { getPagination } from 'src/utils/paginationService';
+import { accounts } from './accounts/accounts.dto';
+import { AccountsService } from './accounts/accounts.service';
 import { createPayoutReport } from './dto/create-payout-report.dto';
 import { updatePayoutReport } from './dto/update-payout-report.dto';
 import { PayoutReportsService } from './payout-reports.service';
 
 @Controller('payout-reports')
 export class PayoutReportsController {
-    constructor(private payoutReportsService: PayoutReportsService) { }
+    constructor(private payoutReportsService: PayoutReportsService,
+        private accountsService: AccountsService) { }
 
     @Post()
     @UseGuards(JwtAuthGuard)
     async create(@Body() createPayoutReport: createPayoutReport, @Request() req) {
         const { clientId } = req.user;
         return this.payoutReportsService.create(createPayoutReport, clientId)
+    }
+
+
+    @Post('/accounts/create')
+    @UseGuards(JwtAuthGuard)
+    async createAccount(@Body() createAccount: accounts, @Request() req) {
+        const { clientId } = req.user;
+        return this.accountsService.create(createAccount)
+    }
+
+    @Get('/accounts/')
+    @UseGuards(JwtAuthGuard)
+    async getAccounts(@Query() query) {
+        const { page, size } = query;
+        let { limit, offset } = getPagination(page, size);
+        return this.accountsService.getAccounts(limit, offset, page)
     }
 
     @Put('/:payoutId')
@@ -37,18 +56,21 @@ export class PayoutReportsController {
                 client: client
             }
         }
+
         if (dni) {
             condition = {
                 ...condition,
                 dni: dni
             }
         }
+
         if (isApproved) {
             condition = {
                 ...condition,
                 isApproved: isApproved
             }
         }
+
         condition = {
             ...condition,
             orderBy: orderBy ? orderBy : 'createdAt'

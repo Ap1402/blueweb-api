@@ -12,9 +12,10 @@ import { CaslModule } from './casl/casl.module';
 import { FactibilityRequestsModule } from './factibility-requests/factibility-requests.module';
 import { MailerModule } from './mailer/mailer.module';
 import { PayoutReportsModule } from './payout-reports/payout-reports.module';
+import { ConfigurationModule } from './configuration/configuration.module';
 
 @Module({
-  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule, MailerModule, PayoutReportsModule],
+  imports: [ClientsModule, DatabaseModule, UsersModule, ReportsModule, ContactMessagesModule, AuthModule, RolesModule, CaslModule, FactibilityRequestsModule, MailerModule, PayoutReportsModule, ConfigurationModule],
   controllers: [AppController],
   providers: [AppService],
 })

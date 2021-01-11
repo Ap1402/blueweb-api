@@ -1,6 +1,7 @@
 import { BelongsTo, Column, DataType, DeletedAt, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Client } from 'src/clients/client.model';
 import { User } from 'src/users/user.model';
+import { Accounts } from './accounts/accounts.model';
 
 @Table
 export class PayoutReports extends Model<PayoutReports> {
@@ -24,11 +25,12 @@ export class PayoutReports extends Model<PayoutReports> {
     })
     bank: string;
 
-    @Column({
-        type: DataType.STRING,
-        allowNull: false
-    })
-    bankDestiny: string;
+    @ForeignKey(() => Accounts)
+    @Column
+    bankDestinyId: number;
+
+    @BelongsTo(() => Accounts, 'bankDestinyId')
+    bankDestiny: Accounts;
 
     @Column({
         type: DataType.STRING,

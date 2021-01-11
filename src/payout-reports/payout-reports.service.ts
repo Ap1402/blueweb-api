@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { Client } from 'src/clients/client.model';
 import { User } from 'src/users/user.model';
 import { getPagingData } from 'src/utils/paginationService';
+import { Accounts } from './accounts/accounts.model';
 import { createPayoutReport } from './dto/create-payout-report.dto';
 import { updatePayoutReport } from './dto/update-payout-report.dto';
 import { PayoutReports } from './payout-reports.model';
@@ -18,6 +19,7 @@ export class PayoutReportsService {
     async create(createPayoutReport: createPayoutReport, clientId: number) {
         this.logger.debug('Creating new payout report')
         const result = await this.payoutReportsRepository.create(createPayoutReport);
+        await result.$set('bankDestiny', createPayoutReport.bankDestiny)
         await result.$set('client', clientId)
         return result
     }
@@ -114,7 +116,9 @@ export class PayoutReportsService {
             offset,
             include: [{
                 model: Client, attributes: ['id', 'names', 'lastNames', 'dni']
-            }, { model: User, attributes: ['username'] }],
+            }, { model: User, attributes: ['username'] }, {
+                model: Accounts, attributes: ['bankName']
+            }],
         });
         const response = getPagingData(payouts, page, limit);
         return response;

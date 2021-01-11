@@ -28,7 +28,6 @@ export class CaslAbilityFactory {
             can(Action.ReadOwn, 'contactMessage');
             can(Action.UpdateOwn, 'client')
             can(Action.ReadOwn, 'client');
-
         }
 
         if (user.role === 'support') {

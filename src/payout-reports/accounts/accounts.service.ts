@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { getPagingData } from 'src/utils/paginationService';
 import { accounts } from './accounts.dto';
 import { Accounts } from './accounts.model';
@@ -24,6 +24,24 @@ export class AccountsService {
         const response = getPagingData(accounts, page, limit);
         return response
     }
+
+    async getById(id: number) {
+        const account = await this.accountsRepository.findByPk(id);
+        if (!account) {
+            throw new HttpException('No se encontró esta cuenta', HttpStatus.NOT_FOUND)
+        }
+        return account;
+    }
+
+    async updateAccount(accountDto: accounts, accountId: number):Promise<Accounts> {
+        this.logger.debug('Updating Account')
+        const account = await this.getById(accountId)
+        for (const key of Object.keys(accountDto)) {
+            account[key] = accountDto[key];
+        }
+        return await account.save();
+    }
+
 
 
 

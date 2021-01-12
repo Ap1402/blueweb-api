@@ -1,4 +1,5 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { check } from 'prettier';
 import { Op } from 'sequelize';
 import { Client } from 'src/clients/client.model';
 import { User } from 'src/users/user.model';
@@ -61,12 +62,26 @@ export class PayoutReportsService {
         this.logger.debug('Approving payout')
         const payout = await this.payoutReportsRepository.findByPk(payoutId);
         payout.isApproved = parseInt(payoutStatus.isApproved) ? true : false;
+        const checkCommerceCode = await this.payoutReportsRepository.findOne({
+            where: {
+                commerceCode: {
+                    [Op.and]: {
+                        [Op.not]: '',
+                        [Op.eq]: payoutStatus.commerceCode
+                    }
+                },
+                id: { [Op.not]: payoutId }
+            }
+        })
+        if (checkCommerceCode) {
+            throw new HttpException('Este número de recibo ya está asignado al reporte de pago número ' + checkCommerceCode.id, HttpStatus.CONFLICT);
+        }
         if (payout.isApproved) {
             payout.approvedAt = new Date();
+            payout.commerceCode = payoutStatus.commerceCode;
         } else {
             payout.commerceCode = '';
         }
-
         payout.$set('user', userId)
         return await payout.save();
     }

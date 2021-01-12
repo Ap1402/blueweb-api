@@ -6,4 +6,5 @@ export interface createPayoutReport {
     accountOwnerDni: string;
     accountOwnerName: string;
     amount: string;
+    commerceCode:string;
 }

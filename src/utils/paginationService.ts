@@ -1,4 +1,3 @@
-import { createClientDto } from 'src/clients/dto/create-client.dto';
 
 export const getPagination = (page, size: number) => {
   const limit: number = size ? +size : 5;

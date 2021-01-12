@@ -35,6 +35,13 @@ export class PayoutReportsController {
         return this.accountsService.getAccounts(limit, offset, page)
     }
 
+    @Put('/accounts/:accountId')
+    @UseGuards(JwtAuthGuard)
+    async updateAccount(@Param() params, @Body() updateAccountDto) {
+        const { accountId } = params;
+        return this.accountsService.updateAccount(updateAccountDto, accountId)
+    }
+    
     @Put('/:payoutId')
     @UseGuards(JwtAuthGuard)
     async changePayoutStatus(@Body() payoutStatus: updatePayoutReport, @Request() req, @Param() params) {

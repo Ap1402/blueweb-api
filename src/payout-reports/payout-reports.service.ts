@@ -132,7 +132,8 @@ export class PayoutReportsService {
             include: [{
                 model: Client, attributes: ['id', 'names', 'lastNames', 'dni']
             }, { model: User, attributes: ['username'] }, {
-                model: Accounts, attributes: ['bankName']
+                model: Accounts, attributes: ['bankName'], paranoid: false
+
             }],
         });
         const response = getPagingData(payouts, page, limit);

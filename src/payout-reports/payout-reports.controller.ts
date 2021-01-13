@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { getPagination } from 'src/utils/paginationService';
 import { accounts } from './accounts/accounts.dto';
@@ -41,7 +41,14 @@ export class PayoutReportsController {
         const { accountId } = params;
         return this.accountsService.updateAccount(updateAccountDto, accountId)
     }
-    
+
+    @Delete('/accounts/:accountId')
+    @UseGuards(JwtAuthGuard)
+    async deactivateAccount(@Param() params) {
+        const { accountId } = params;
+        return this.accountsService.deactivateAccount(accountId)
+    }
+
     @Put('/:payoutId')
     @UseGuards(JwtAuthGuard)
     async changePayoutStatus(@Body() payoutStatus: updatePayoutReport, @Request() req, @Param() params) {

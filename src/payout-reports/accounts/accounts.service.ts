@@ -33,7 +33,7 @@ export class AccountsService {
         return account;
     }
 
-    async updateAccount(accountDto: accounts, accountId: number):Promise<Accounts> {
+    async updateAccount(accountDto: accounts, accountId: number): Promise<Accounts> {
         this.logger.debug('Updating Account')
         const account = await this.getById(accountId)
         for (const key of Object.keys(accountDto)) {
@@ -43,6 +43,10 @@ export class AccountsService {
     }
 
 
-
+    async deactivateAccount(accountId: number): Promise<number> {
+        this.logger.debug('Updating Account')
+        const isDeleted = await this.accountsRepository.destroy({ where: { id: accountId } })
+        return isDeleted;
+    }
 
 }

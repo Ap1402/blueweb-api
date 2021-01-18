@@ -19,11 +19,9 @@ export class PayoutReportsController {
         return this.payoutReportsService.create(createPayoutReport, clientId)
     }
 
-
     @Post('/accounts/create')
     @UseGuards(JwtAuthGuard)
     async createAccount(@Body() createAccount: accounts, @Request() req) {
-        const { clientId } = req.user;
         return this.accountsService.create(createAccount)
     }
 

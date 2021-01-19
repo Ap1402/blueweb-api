@@ -4,6 +4,8 @@ import { AppAbility } from 'src/casl/casl-ability.factory';
 import { Action, CheckPolicies } from 'src/casl/constants';
 import { PoliciesGuard } from 'src/casl/policies.guard';
 import { getPagination } from 'src/utils/paginationService';
+import { chatDataDto } from './chat-data/chatData.dto';
+import { ChatDataReceptorService } from './chat-data/chatDataReceptor.service';
 import { ContactMessagesService } from './contact-messages.service';
 import { createMessageDto } from './dto/createMessage.dto';
 import { ContactMessagesReasonsService } from './reasons/contactMessagesReasons.service';
@@ -13,6 +15,8 @@ import { createReason } from './reasons/reason.dto';
 export class ContactMessagesController {
     constructor(private contactMessagesService: ContactMessagesService,
         private contactMessagesReasonsService: ContactMessagesReasonsService,
+        private chatDataReceptorService: ChatDataReceptorService,
+
     ) { }
 
     @Post()
@@ -66,6 +70,32 @@ export class ContactMessagesController {
     @Post('/reasons')
     async createReason(@Body() createReasonDto: createReason) {
         return this.contactMessagesReasonsService.createReason(createReasonDto)
+    }
+
+    @Post('/chatPreform')
+    async saveChatPreform(@Body() chatPreform: chatDataDto) {
+        console.log(chatPreform)
+        return this.chatDataReceptorService.saveChatPreform(chatPreform)
+    }
+    @Get('/chatPreform')
+    async getChatPreformData(@Query() query) {
+        const { page, size, wasAnswered, sentWhileOnline } = query;
+        var condition = {};
+        if (wasAnswered) {
+            condition = {
+                ...condition,
+                wasAnswered: wasAnswered
+            }
+        }
+        if (sentWhileOnline) {
+            condition = {
+                ...condition,
+                sentWhileOnline: sentWhileOnline
+            }
+        }
+        let { limit, offset } = getPagination(page, size);
+        return this.chatDataReceptorService.getChatPreforms(condition, limit, offset, page)
+
     }
 
     @Get('/reasons')

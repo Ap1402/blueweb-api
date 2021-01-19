@@ -4,9 +4,10 @@ import { ContactMessagesController } from './contact-messages.controller';
 import { contactMessages } from './contact-messages.providers';
 import { CaslModule } from 'src/casl/casl.module';
 import { ContactMessagesReasonsService } from './reasons/contactMessagesReasons.service';
+import { ChatDataReceptorService } from './chat-data/chatDataReceptor.service';
 
 @Module({
-  providers: [ContactMessagesService, ...contactMessages, ContactMessagesReasonsService],
+  providers: [ContactMessagesService, ...contactMessages, ContactMessagesReasonsService, ChatDataReceptorService],
   imports: [CaslModule],
   controllers: [ContactMessagesController]
 })

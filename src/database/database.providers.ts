@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
 import { Token } from 'src/auth/token.model';
 import { Client } from 'src/clients/client.model';
+import { ChatData } from 'src/contact-messages/chat-data/chatDataReceptor.model';
 import { ContactMessage } from 'src/contact-messages/contact-messages.model';
 import { ContactMessagesReasons } from 'src/contact-messages/reasons/contactMessagesReasons.model';
 import { FactibilityRequest } from 'src/factibility-requests/factibility-request.model';
@@ -26,7 +27,7 @@ export const databaseProviders = [
         password: "2804"
       });
       sequelize.addModels([Client, ReportComments, User, ReportCategory, ReportStatus, Report, Token, ContactMessage,
-        ContactMessagesReasons, Role, FactibilityRequest, PayoutReports, Accounts]);
+        ContactMessagesReasons, Role, FactibilityRequest, PayoutReports, Accounts, ChatData]);
       /*    await sequelize.query('SET FOREIGN_KEY_CHECKS = 0', { raw: true })
          await sequelize.sync({ force: true })
          await ReportStatus.create({ name: 'Pendiente' })

@@ -49,11 +49,11 @@ export class ChatData extends Model<ChatData> {
     sentWhileOnline: string;
 
     @Column({
-        type: DataType.STRING,
+        type: DataType.BOOLEAN,
         allowNull: false,
         defaultValue: 0,
     })
-    wasAnswered: string;
+    wasAnswered: boolean;
 
     @DeletedAt
     deletedAt: Date;

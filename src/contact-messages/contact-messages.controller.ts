@@ -98,6 +98,14 @@ export class ContactMessagesController {
 
     }
 
+
+    @Put('/chatPreform/:id')
+    async setChatPreformAsAnswered(@Param() params) {
+        const { id } = params;
+        return this.chatDataReceptorService.setPreformAsContacted(id)
+
+    }
+
     @Get('/reasons')
     async getReasons() {
         return this.contactMessagesReasonsService.getReasons()

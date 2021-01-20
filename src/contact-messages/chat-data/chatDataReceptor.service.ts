@@ -41,6 +41,15 @@ export class ChatDataReceptorService {
     };
 
 
+    async setPreformAsContacted(id: number) {
+        this.logger.debug("Getting data preform");
+        const preformData = await this.chatDataRepository.findByPk(id);
+        preformData.wasAnswered = !preformData.wasAnswered;
+        await preformData.save();
+        return preformData;
+    };
+
+
     /*   async getReasons(): Promise<ContactMessagesReasons[]> {
           this.logger.debug("Getting reasons");
           return await this.contactMessagesReasons.findAll();
